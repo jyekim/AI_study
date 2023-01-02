@@ -27,4 +27,3 @@ result = model.predict([6])
 print('6의 결과:',result)
 
 #판단의 기준은  항상 loss가 기준이다. 다른 지표도 나오긴 하지만...그래도 loss가 가장 중요 
-#11
