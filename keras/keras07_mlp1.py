@@ -22,10 +22,11 @@ model.add(Dense(3))
 model.add(Dense(2))
 model.add(Dense(1))
 
-#3. 컴파일
+#3. 컴파일, 훈련(train set)
 model.compile(loss='mae', optimizer='adam')
-model.fit(x, y,epochs=150, batch_size=1)
-#4 평가 
+model.fit(x, y,epochs=150, batch_size=1) #훈련데이터의 과적합/ 훈련할때는 좋은 성능이 나오지만 예측할때는 엉망인 결과가 나올수도 있다.
+
+#4 평가(test set) 예측
 loss = model.evaluate(x, y)
 print('loss :', loss)
 
@@ -33,7 +34,9 @@ result = model.predict([[10, 1.4]])
 print('[10, 1.4]의 예측값 : ', result)
 
 '''
-결과:         loss : 0.06600888073444366
+결과:        
+batch
+loss : 0.06600888073444366
 [10, 1.4]의 예측값 :  [[20.128046]]       
 
 '''
