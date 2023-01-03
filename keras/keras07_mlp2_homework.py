@@ -26,7 +26,7 @@ model.add(Dense(1))
  
  #3.컴파일 
 model.compile(loss='mae', optimizer='adam' )
-model.fit(x, y, epochs=62, batch_size=1 )
+model.fit(x, y, epochs=100, batch_size=2 )
 
 #4.평가 
 loss = model.evaluate(x, y)
@@ -36,8 +36,14 @@ print('[10, 1.4, 0]의 예측값 : ', result)
 
 
 '''
-결과: epochs= 60 으로 했을 때 loss: 0.0964
+결과: 
+epochs= 60 으로 했을 때 loss: 0.0964
 loss: 0.09640921652317047
 [10, 1.4, 0]의 예측값 :  [[20.159138]]
+
+
+결과: 
+
+
 
 '''
