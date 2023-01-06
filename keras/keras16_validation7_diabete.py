@@ -85,14 +85,7 @@ model.add(Dense(48, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(1, activation='linear'))
 
-#3.컴파일 훈련
-import time
-start = time.time()
-model.compile(loss='mse', optimizer='adam') 
-
 model.fit(x_train, y_train, epochs=500, batch_size=20, validation_split=0.3)
-
-loss :  5018.89111328125
-RMSE :  70.84413018956936
-R2 :  0.2033718374145761
+RMSE :  57.53455507732929
+R2 :  0.47458141726290326
 """
