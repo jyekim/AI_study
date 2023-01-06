@@ -15,7 +15,7 @@ y = dataset.target
 x_train, x_test, y_train, y_test= train_test_split(x, y,
     train_size=0.7, shuffle=True, random_state=123
 ) 
-#
+
 print(x)
 print(x.shape) #(442, 10)
 print(y)

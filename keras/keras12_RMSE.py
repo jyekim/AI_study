@@ -40,8 +40,6 @@ print("====================")
 from sklearn.metrics import mean_squared_error 
 def RMSE(y_test, y_predict):
     return np.sqrt(mean_squared_error(y_test,y_predict)) # RMSE ytest와 ypredict값을 받아서 
-
-
 print("RMSE : ", RMSE(y_test, y_predict))  
     
 #def는 함수를 정의하는 것

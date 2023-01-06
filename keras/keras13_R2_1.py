@@ -37,11 +37,14 @@ print(y_predict)
 print("====================")
 #modelpredict에 최적의 가중치가 생성되어 있다/ x_test예측값이 생성되어서 y_predict에 넣어놓겠다 
 
+
+#RMSE구하기
 from sklearn.metrics import mean_squared_error, r2_score
 def RMSE(y_test, y_predict):
     return np.sqrt(mean_squared_error(y_test,y_predict)) # RMSE ytest와 ypredict값을 받아서 
 print("RMSE : ", RMSE(y_test, y_predict))  
 
+#R2구하기
 r2 = r2_score(y_test, y_predict)
 print("R2 : ", r2)
-#r2는높으면 성능이 좋다라는 것을 알 수 있다. 
+

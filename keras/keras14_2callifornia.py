@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split 
 
 
-#1. 데이터 보스턴 집값에 대한 데이터
+#1. 데이터 캘리
 dataset = fetch_california_housing()
 x = dataset.data
 y = dataset.target
@@ -39,7 +39,7 @@ print(dataset.DESCR)
 #2.모델구성
 model = Sequential()
 model.add(Dense(10,input_dim=8))
-model.add(Dense(245))
+model.add(Dense(45))
 model.add(Dense(15))
 model.add(Dense(12))
 model.add(Dense(53))
@@ -55,7 +55,7 @@ model.add(Dense(1))
 #3.컴파일 훈련
 model.compile(loss='mse', optimizer='adam', metrics= ['mae']) 
 
-model.fit(x_train, y_train, epochs=750, batch_size=20) 
+model.fit(x_train, y_train, epochs=750, batch_size=50) 
 
 #평가 예측 
 loss = model.evaluate(x_test , y_test)
@@ -125,4 +125,9 @@ R2 :  0.5500980156921897
 RMSE :  0.7715834528323051
 R2 :  0.5497648512453621
     
+    
+    
+ 속도구하기 
+ cpu  걸린시간:
+ gpu 걸린시간: 
     """

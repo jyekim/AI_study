@@ -18,7 +18,7 @@ x = dataset.data
 y = dataset.target
 
 x_train, x_test, y_train, y_test= train_test_split(x, y,
-    train_size=0.7, shuffle=True, random_state=123
+    train_size=0.8, shuffle=True, random_state=123
 ) 
 print ('x_train : ',x_train) 
 print ('x_test : ', x_test)
@@ -40,17 +40,19 @@ print(dataset.DESCR)
 model = Sequential()
 model.add(Dense(5,input_dim=13))
 model.add(Dense(10))
-model.add(Dense(100))
-model.add(Dense(7))
-model.add(Dense(30))
-model.add(Dense(32))
 model.add(Dense(40))
+model.add(Dense(27))
+model.add(Dense(30))
+model.add(Dense(10))
+model.add(Dense(28))
+model.add(Dense(31))
+model.add(Dense(25))
 model.add(Dense(1))
 
 #3.컴파일 훈련
 model.compile(loss='mse', optimizer='adam', metrics= ['mae']) 
 
-model.fit(x_train, y_train, epochs=850, batch_size=40) 
+model.fit(x_train, y_train, epochs=5500, batch_size=20) 
 
 #평가 예측 
 loss = model.evaluate(x_test , y_test)
