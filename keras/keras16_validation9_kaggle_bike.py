@@ -95,7 +95,8 @@ submission.to_csv(path +"submission_0106.csv")
 
 """
 결과
-
+loss :  105.96356201171875
+RMSE :  153.67648720538205
 
 
 
