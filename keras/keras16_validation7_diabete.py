@@ -5,7 +5,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense 
 import numpy as np         
 from sklearn.model_selection import train_test_split 
-
+from sklearn.metrics import mean_squared_error, r2_score
 
 #1. 데이터
 
@@ -13,7 +13,7 @@ dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
 x_train, x_test, y_train, y_test= train_test_split(x, y,
-    test_size=0.2, random_state=123
+    train_size=0.7, random_state=66
 ) 
 
 # print(x)
@@ -32,28 +32,19 @@ model = Sequential()
 model.add(Dense(19, input_dim=10, activation = 'relu'))
 model.add(Dense(20, activation='relu'))
 model.add(Dense(18, activation='relu'))
-model.add(Dense(80, activation='relu'))
-model.add(Dense(81, activation='relu'))
-model.add(Dense(66, activation='relu'))
-model.add(Dense(58, activation='relu'))
-model.add(Dense(48, activation='relu'))
-model.add(Dense(32, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(15, activation='relu'))
 model.add(Dense(1, activation='linear'))
 
 #3.컴파일 훈련
-import time
-start = time.time()
-model.compile(loss='mse', optimizer='adam') 
+model.compile(loss='mae', optimizer='adam') 
+model.fit(x_train, y_train, epochs=100, batch_size=5, validation_split=0.2)
 
-model.fit(x_train, y_train, epochs=500, batch_size=20, validation_split=0.3)
-end = time.time()
-print("걸린시간 : ", end - start)
 
 
 #4평가 예측 
 loss = model.evaluate(x_test , y_test)
 print('loss : ', loss)
-
 y_predict = model.predict(x_test)
 # print("===================")
 # print(y_test)
@@ -61,7 +52,7 @@ y_predict = model.predict(x_test)
 # print("====================")
 #modelpredict에 최적의 가중치가 생성되어 있다/ x_test예측값이 생성되어서 y_predict에 넣어놓겠다 
 
-from sklearn.metrics import mean_squared_error, r2_score
+
 def RMSE(y_test, y_predict):
     return np.sqrt(mean_squared_error(y_test,y_predict)) # RMSE ytest와 ypredict값을 받아서 
 print("RMSE : ", RMSE(y_test, y_predict))  
@@ -77,15 +68,33 @@ model = Sequential()
 model.add(Dense(19, input_dim=10, activation = 'relu'))
 model.add(Dense(20, activation='relu'))
 model.add(Dense(18, activation='relu'))
-model.add(Dense(80, activation='relu'))
-model.add(Dense(81, activation='relu'))
-model.add(Dense(66, activation='relu'))
+model.add(Dense(62, activation='relu'))
 model.add(Dense(58, activation='relu'))
-model.add(Dense(48, activation='relu'))
-model.add(Dense(32, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(15, activation='relu'))
 model.add(Dense(1, activation='linear'))
 
-model.fit(x_train, y_train, epochs=500, batch_size=20, validation_split=0.3)
-RMSE :  57.53455507732929
-R2 :  0.47458141726290326
+#3.컴파일 훈련
+model.compile(loss='mae', optimizer='adam') 
+model.fit(x_train, y_train, epochs=300, batch_size=10, validation_split=0.2)
+R2 :  0.3159580698321376
+
+
+
+#2.모델구성
+model = Sequential()
+model.add(Dense(19, input_dim=10, activation = 'relu'))
+model.add(Dense(20, activation='relu'))
+model.add(Dense(18, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(15, activation='relu'))
+model.add(Dense(1, activation='linear'))
+
+#3.컴파일 훈련
+model.compile(loss='mae', optimizer='adam') 
+model.fit(x_train, y_train, epochs=100, batch_size=5, validation_split=0.2)
+R2 :  0.5046417113950639
+
+
+
 """

@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
+import time as t
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
-
-
 
 
 #1. 데이터
@@ -14,8 +13,6 @@ train_csv = pd.read_csv(path + 'train.csv', index_col=0)
 # train_csv = pd.read_csv('./_data/ddarung/train.csv', index_col=0)    # 원래 해야하는거, index_col=0 == 0번째는 데이터 아니다.
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
 submission = pd.read_csv(path + 'submission.csv', index_col=0)
-x_validation= train_csv
-y_validation= test_csv
 
 print(train_csv)    #(1459, 10) , count는 y값이므로 제외해야한다. input_dim=9
 print(submission.shape)
@@ -102,20 +99,6 @@ submission.to_csv(path + 'submission_01050251.csv')
 
 """
 결과
-model.add(Dense(1, input_dim=9))
-model.add(Dense(3))
-model.add(Dense(4))
-model.add(Dense(8))
-model.add(Dense(1))
-model.add(Dense(12))
-model.add(Dense(9))
-model.add(Dense(6))
-model.add(Dense(15))
-model.add(Dense(18))
-model.add(Dense(3))
-model.add(Dense(10))
-model.add(Dense(1))
- epochs=1500, batch_size=32)  
-RMSE :  53.49819261975194
+
 
  """

@@ -10,8 +10,7 @@ path = './_data/bike/'
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)    # train_csv = pd.read_csv('./_data/ddarung/train.csv', index_col=0)==원래 해야하는거// index_col=0 == 0번째는 데이터 아니다.
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
 submission = pd.read_csv(path + 'samplesubmission.csv', index_col=0)
-x_validation = train_csv
-y_validation = test_csv 
+
 
 
 print(train_csv)    #, count는 y값이므로 제외해야한다. 
@@ -61,14 +60,12 @@ model.add(Dense(1, activation='linear'))         #제일 마지막값을 sigmoid
 #3. 컴파일, 훈련
 #loss = mae or mse optimizer= 'adam', matrix[mae or mse]
 import time
-model.compile(loss='mse', optimizer='adam',
-                metrics=['mae'])
+model.compile(loss='mae', optimizer='adam',)
 start = time.time()
-model.fit(x_train, y_train, epochs=600, batch_size=50, validation_data=(x_validation, y_validation))
+model.fit(x_train, y_train, epochs=150, batch_size=32, validation_split=(0.2))
 end = time.time()
 print("걸린시간 : ", end - start)
-# cpu 걸린시간 :  51.54655790328979560
-# gpu 걸린시간 :  22.688528060913086
+
 
 #4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
