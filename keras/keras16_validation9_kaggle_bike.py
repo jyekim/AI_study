@@ -48,13 +48,10 @@ print(y_train.shape, y_test.shape)  #   (7620,) (3266,)
 model = Sequential()
 model.add(Dense(9,input_dim=8, activation='relu'))
 model.add(Dense(10, activation='relu'))
-model.add(Dense(16, activation='sigmoid'))
 model.add(Dense(23, activation= 'relu'))
 model.add(Dense(40, activation= 'relu'))
-model.add(Dense(23, activation= 'relu'))
 model.add(Dense(113, activation= 'relu'))
 model.add(Dense(43, activation= 'relu'))
-model.add(Dense(60, activation= 'relu'))
 model.add(Dense(1, activation='linear'))         #제일 마지막값을 sigmoid로 두면 안됨 0~1로 한정되기 때문 , relu도 마지막 안됨
 
 #3. 컴파일, 훈련
@@ -98,14 +95,7 @@ submission.to_csv(path +"submission_0106.csv")
 
 """
 결과
-model.add(Dense(10,input_dim=8, activation='relu'))
-model.add(Dense(20, activation='relu'))
-model.add(Dense(11, activation='sigmoid'))
-model.add(Dense(12, activation= 'relu'))
-model.add(Dense(10, activation= 'relu'))
-model.add(Dense(1, activation='linear'))      
-model.fit(x_train, y_train, epochs=250, batch_size=32)
-RMSE :  148.2598461464871
+
 
 
 
