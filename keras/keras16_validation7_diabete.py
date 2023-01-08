@@ -32,13 +32,15 @@ model = Sequential()
 model.add(Dense(19, input_dim=10, activation = 'relu'))
 model.add(Dense(20, activation='relu'))
 model.add(Dense(18, activation='relu'))
-model.add(Dense(8, activation='relu'))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(80, activation='relu'))
 model.add(Dense(15, activation='relu'))
 model.add(Dense(1, activation='linear'))
 
 #3.컴파일 훈련
 model.compile(loss='mae', optimizer='adam') 
-model.fit(x_train, y_train, epochs=100, batch_size=5, validation_split=0.2)
+model.fit(x_train, y_train, epochs=600, batch_size=15, validation_split=0.2)
 
 
 
