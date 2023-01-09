@@ -39,14 +39,14 @@ print(y)
 print(y.shape)  # (1459, )
 
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-                        train_size=0.7, shuffle=True, random_state=1234)
+                        train_size=0.8, shuffle=True, random_state=1234)
 print(x_train.shape, x_test.shape)  #   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape)  #   (929,) (399,)
 
 
 #2. 모델구성
 model = Sequential()
-model.add(Dense(1, input_dim=9, activation='relu'))
+model.add(Dense(1, input_dim=9))
 model.add(Dense(3, activation='relu'))
 model.add(Dense(4, activation='relu'))
 model.add(Dense(8, activation='relu'))
@@ -61,9 +61,36 @@ model.add(Dense(1, activation='linear'))
 
 #3. 컴파일, 훈련
 #loss = mae or mse optimizer= 'adam', matrix[mae or mse]
-model.compile(loss='mse', optimizer='adam',
-                metrics=['mae'])
-model.fit(x_train, y_train, epochs=600, batch_size=5)
+model.compile(loss='mae', optimizer='adam')
+from tensorflow.keras.callbacks import EarlyStopping
+earlystopping = EarlyStopping(monitor='val_loss', mode='min',
+                              patience=10, restore_best_weights=True, verbose=1) 
+hist = model.fit(x_train, y_train, epochs=5000, batch_size=5, validation_split=0.2, callbacks=[earlystopping])
+#4. 평가 예측
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
+#verbose 1  걸린시간
+print("=================================")
+print(hist)  
+print("==================================")
+print(hist.history)      # dictionary 키 value 형태로 되어 있다. list형태 2개이상 /반환값 안에는  loss와 valloss의 dictionary히스토리에 제공된 변수가 있다는 뜻 
+print("==================================")
+print(hist.history['loss'])      
+print("==================================")
+print(hist.history['val_loss'])     
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(9,6))     #.리스트 형태로 순서대로 되어 있는 것은  x를 명시 안해도 상관없다. 즉, y 만 넣어주면 됨
+plt.plot(hist.history['loss'], c= 'red', marker='.', label= 'loss')
+plt.plot(hist.history['val_loss'], c= 'blue', marker='.', label= 'val_loss')
+plt.grid() #격자
+plt.xlabel('epochs')
+plt.ylabel('loss')
+plt.title('dacon_ darrung loss')
+plt.legend()   # 라벨이 명시됨
+#plt.legend(loc='upper left')   
+plt.show()
 
 #4. 평가, 예측
 
@@ -72,9 +99,9 @@ print('loss : ', loss)
 
 y_predict = model.predict(x_test)
 print(y_predict)
-
+"""
 # 결측치 처리 x
-
+"""
 def RMSE(y_test, y_predict):
     return np.sqrt(mean_squared_error(y_test, y_predict))
 rmse = RMSE(y_test, y_predict)
@@ -93,11 +120,24 @@ y_submit = model.predict(test_csv)   #예측한 카운트가 y_submit
 submission['count'] = y_submit
 # print(submission)
  
-submission.to_csv(path + 'submission_01050251.csv')
-
+submission.to_csv(path + 'submission_010090422.csv')
 
 """
 결과
+x_train, x_test, y_train, y_test = train_test_split(x, y,
+                        train_size=0.8, shuffle=True, random_state=1234)
+earlystopping = EarlyStopping(monitor='val_loss', mode='min',
+                              patience=5, restore_best_weights=True, verbose=1) 
+hist = model.fit(x_train, y_train, epochs=500, batch_size=5, validation_split=0.2, callbacks=[earlystopping])
+RMSE :  81.68286817561182
 
 
- """
+
+
+model.compile(loss='mae', optimizer='adam')
+from tensorflow.keras.callbacks import EarlyStopping
+earlystopping = EarlyStopping(monitor='val_loss', mode='min',
+                              patience=10, restore_best_weights=True, verbose=1) 
+hist = model.fit(x_train, y_train, epochs=5000, batch_size=5, validation_split=0.2, callbacks=[earlystopping])
+RMSE :  51.262638685439704
+"""

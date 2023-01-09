@@ -52,19 +52,49 @@ model.add(Dense(23, activation= 'relu'))
 model.add(Dense(40, activation= 'relu'))
 model.add(Dense(113, activation= 'relu'))
 model.add(Dense(43, activation= 'relu'))
-model.add(Dense(1, activation='linear'))         #제일 마지막값을 sigmoid로 두면 안됨 0~1로 한정되기 때문 , relu도 마지막 안됨
+model.add(Dense(1, activation= 'linear'))         #제일 마지막값을 sigmoid로 두면 안됨 0~1로 한정되기 때문 , relu도 마지막 안됨
 
 #3. 컴파일, 훈련
 #loss = mae or mse optimizer= 'adam', matrix[mae or mse]
 import time
 model.compile(loss='mae', optimizer='adam',)
+from tensorflow.keras.callbacks import EarlyStopping
+earlystopping = EarlyStopping(monitor='val_loss', mode='min',
+                              patience=10, restore_best_weights=True, verbose=1) 
 start = time.time()
-model.fit(x_train, y_train, epochs=150, batch_size=32, validation_split=(0.2))
+hist = model.fit(x_train, y_train, epochs=3000, batch_size=32, validation_split=(0.2), callbacks=[earlystopping])
 end = time.time()
 print("걸린시간 : ", end - start)
 
 
 #4. 평가, 예측
+#4. 평가 예측
+loss = model.evaluate(x_test, y_test)
+print('loss : ', loss)
+#verbose 1  걸린시간
+print("=================================")
+print(hist)  
+print("==================================")
+print(hist.history)      # dictionary 키 value 형태로 되어 있다. list형태 2개이상 /반환값 안에는  loss와 valloss의 dictionary히스토리에 제공된 변수가 있다는 뜻 
+print("==================================")
+print(hist.history['loss'])      
+print("==================================")
+print(hist.history['val_loss'])     
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(9,6))     #.리스트 형태로 순서대로 되어 있는 것은  x를 명시 안해도 상관없다. 즉, y 만 넣어주면 됨
+plt.plot(hist.history['loss'], c= 'red', marker='.', label='loss')
+plt.plot(hist.history['val_loss'], c= 'blue', marker='.', label='val_loss')
+plt.grid() #격자
+plt.xlabel('epochs')
+plt.ylabel('loss')
+plt.title('kaggle_bike loss')
+plt.legend()   # 라벨이 명시됨
+#plt.legend(loc='upper left')   
+plt.show()
+
+
 loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
 
