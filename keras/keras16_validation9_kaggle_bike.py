@@ -14,6 +14,7 @@ submission = pd.read_csv(path + 'samplesubmission.csv', index_col=0)
 
 
 print(train_csv)    #, count는 y값이므로 제외해야한다. 
+print("여기까지 train_csv")
 print(train_csv.columns)
 # Index(['season', 'holiday', 'workingday', 'weather', 'temp', 'atemp',
 #        'humidity', 'windspeed', 'casual', 'registered', 'count'],
