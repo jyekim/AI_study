@@ -36,7 +36,7 @@ model.compile(loss='mse', optimizer='adam')
 from tensorflow.keras.callbacks import EarlyStopping    #대문자로 시작하면 파이썬의 클래스로 지정되어 있는것/ 함수는 소문자로 시작함
 earlystopping = EarlyStopping(monitor='val_loss', mode='min', 
                               patience=10, restore_best_weights=True, verbose=1)    #loss 를 할지 val_loss로 할지 선택 가능 loss는 무조건 min accuracy는 max로 하면됨
-                                            #멈추기 시작한 자리; 브레이크 한 시점의 웨이트가 저장된다.  
+                                            #멈추기 시작한 자리; 브레이크 한 시점의 웨이트가 저장된다.  patience 너무 크게 잡으면 빨리 끝나버림 
 
 
 hist = model.fit(x_train, y_train, epochs=200, batch_size=1, 

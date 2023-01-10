@@ -29,7 +29,7 @@ import time
 model.compile(loss='mse', optimizer='adam')
 start = time.time()
 model.fit(x_train, y_train, epochs=50, batch_size=1, 
-          validation_split=0.2, verbose=3)   #. verbose는 함수 수행시 발생하는 상세한 정보들을 표준 출력으로 자세히 내보낼것인가 나타냄, 
+          validation_split=0.2, verbose=3)   #. verbose는 함수 수행시 발생하는 상세한 정보들을 표준 출력으로 자세히 내보낼것인가 나타냄, 딜레이 시간이 있다. 그걸줄이기 위해 사용하는것
                                             #. 0은 출력하지 않고, 1은 자세히, 2는 함축적인 정보만 출력하는 형태 3은 에포만 나옴
 end = time.time()                                                                                     
 #3. 평가 예측

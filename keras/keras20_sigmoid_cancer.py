@@ -43,8 +43,11 @@ print('accuracy : ', accuracy)
 
 y_predict = model.predict(x_test)
 y_predict_2 = np.where(y_predict >= 0.5, 1, 0 ) #과제1 실수값을 정수형으로 바꿔주면 됨 R로 시작되는어떤거  #과제2  accuracy score 완성시키기 
-# intarr = list(map(int, y_predict))
 
+# 방법 2        intarr = list(map(int, y_predict))
+# 방법 3        y_predict = np.asarray(y_predict, dtype = int)    # np.asarray: 입력된 데이터를 np.array 형식으로 만듬. #(import numpy as np로 임포트 안했으면 np 대신에 numpy 그대로 입력해야함.) 
+                                                                    # dtype 속성: 데이터 형식 변경 
+# (int: 정수형 / float: 실수형 / complex: 복소수형 / str: 문자형)
 print(y_predict[:10])
 print(y_predict_2[:10])
 

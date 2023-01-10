@@ -46,7 +46,7 @@ print("==================================")
 print(hist.history['val_loss'])     
 
 
-
+# 한글 폰트 넣기 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -65,7 +65,7 @@ plt.grid() #격자
 plt.xlabel('epochs')
 plt.ylabel('loss')
 plt.title('보스톤 손실함수')               # matplotlib  그림에서 한글 깨짐 수정하기 
-plt.legend()   # 라벨이 명시됨
+plt.legend()   # 라벨값이 명시됨
 #plt.legend(loc='upper left')   
 plt.show()
 
