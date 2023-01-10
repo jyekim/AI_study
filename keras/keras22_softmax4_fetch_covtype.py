@@ -19,7 +19,7 @@ print(np.unique(y, return_counts=True))      #(array([1, 2, 3, 4, 5, 6, 7]), arr
 # # # Print the new shape of the target variable 'y'
 # print(y.shape)
 
-
+#====쉐이프를 맞추는 작업====== 
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder   # Initialize the OneHotEncoder  #첫 번째 방법 
 ohe = OneHotEncoder()
@@ -31,8 +31,8 @@ print(y.shape)    #(581012, 7)
 
 
 # import pandas as pd                        # 두 번째 방법 
-# y = pd.get_dummies(y)
-# y_np = y.values
+# y = pd.get_dummies(y,drop_first=False)
+# y = np.array(y)
 # print(y.shape)  # (581012, 7)
 
 
@@ -42,7 +42,7 @@ print(y.shape)    #(581012, 7)
 
 
 
-# #쉐이프를 맞추는 작업 
+#====쉐이프를 맞추는 작업======= 
 # #print(type(y))
 
 
@@ -81,7 +81,7 @@ end = time.time()
 print('걸린시간 : ', end- start)
 
 #4. 평가 예측 
-loss, accuracy = model.evaluate(x_test, y_test)
+loss, accuracy = model.evaluate(x_test, y_test)   
 print('loss : ', loss)  
 print('accuracy : ', accuracy)                              
 
@@ -118,7 +118,19 @@ y_test(원래값) :  [6 2 2 ... 1 0 5]
 (0.7550407476571173,)
 
 
+OneHotEncoder (첫번째 방법 썼을때) 
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, shuffle=True, random_state=222, test_size=0.2, stratify=y)
+model.compile(loss = 'categorical_crossentropy', optimizer='adam', metrics=['accuracy'])          
+earlystopping = EarlyStopping(monitor='val_loss', mode='min', patience=10, restore_best_weights=True, verbose=1)
 
+model.fit(x_train, y_train, epochs=100, batch_size=64, 
+          validation_split=0.2, callbacks=[earlystopping], verbose=1)
+Epoch 00049: early stopping
+걸린시간 :  999.355678319931
+3632/3632 [==============================] - 5s 1ms/step - loss: 0.4960 - accuracy: 0.7824
+loss :  0.49599209427833557
+accuracy :  0.7823894619941711
 
 
 """
