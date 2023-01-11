@@ -3,7 +3,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 
-
+  # sparse categorical로 하는것은   onehot없이 진행되는 것 라벨이 0,1,2,3,4와 같은 정수형태로 제공될때 
 #1. 데이터
 
 datasets = load_iris()
@@ -19,11 +19,11 @@ print(x.shape)
 print(y.shape)   #(150, 4),  (150, )
 
 
-from tensorflow.keras.utils import to_categorical 
-y = to_categorical(y) 
+# from tensorflow.keras.utils import to_categorical 
+# y = to_categorical(y) 
 
-print(y)
-print(y.shape) # (150, 3) 으로 바뀐걸 알 수 있음 
+# print(y)
+# print(y.shape) # (150, 3) 으로 바뀐걸 알 수 있음 
 
 
 
@@ -44,9 +44,11 @@ model.add(Dense(3, activation='softmax'))           #다중분류는 마지막�
                                                     #3인 이유는 y 안에 들어가는 class가 3개이기 때문 마지막 노드의 갯수는 클래스의 갯수와 동일하게 해준다
 
 #3. 컴파일, 훈련
-model.compile(loss='categorical_crossentropy', optimizer='adam',
-              metrics=['accuracy'])           
 
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam',
+              metrics=['accuracy'])                                              
+
+  
       
 model.fit(x_train, y_train, epochs=50, batch_size=1,
           validation_split=0.2,
@@ -68,7 +70,7 @@ import numpy as np
 y_predict = model.predict(x_test)     
 y_predict =np.argmax(y_predict, axis=1)   
 print('y_pred(예측값) :', y_predict)
-y_test =np.argmax(y_test, axis=1)     # 가장 큰 값을 찾아내는 것 
+# y_test =np.argmax(y_test, axis=1)     # 가장 큰 값을 찾아내는 것  #y_test는 원핫처리를 안했기에 쓸 이유가 없기에 주석 처리됨
 print('y_test(원래값) : ', y_test)  
 print(y_predict)
 
