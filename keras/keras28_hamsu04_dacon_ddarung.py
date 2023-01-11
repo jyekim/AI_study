@@ -1,16 +1,17 @@
 import numpy as np
 import pandas as pd
-import time as t
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+
+
 
 
 #1. 데이터
-# path = './_data/ddarung/'
-path = '../_data/ddarung/'         #이거는 keras폴더로만 사용해서 gpu돌리게 될때 경로 재설정
-# path = 'c:/study/_data/ddarung/'   #이거는 cpu gpu 둘 다 쓸때 경로 설정 없이 가능함
+path = './_data/ddarung/'
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)
 # train_csv = pd.read_csv('./_data/ddarung/train.csv', index_col=0)    # 원래 해야하는거, index_col=0 == 0번째는 데이터 아니다.
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
@@ -45,27 +46,61 @@ x_train, x_test, y_train, y_test = train_test_split(x, y,
 print(x_train.shape, x_test.shape)  #   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape)  #   (929,) (399,)
 
+scaler = MinMaxScaler()   #
+scaler.fit(x_train)
+x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+x_test = scaler.transform(x_test)
 
-#2. 모델구성
-model = Sequential()
-model.add(Dense(1, input_dim=9, activation='relu'))
-model.add(Dense(3, activation='relu'))
-model.add(Dense(4, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='relu'))
-model.add(Dense(12, activation='relu'))
-model.add(Dense(9, activation='relu'))
-model.add(Dense(6, activation='relu'))
-model.add(Dense(15, activation='relu'))
-model.add(Dense(18, activation='relu'))
-model.add(Dense(10, activation='linear' ))
-model.add(Dense(1, activation='linear'))
+
+# scaler = StandardScaler()
+# scaler.fit(x_train)
+# x_train = scaler.transform(x_train)     
+# x_test = scaler.transform(x_test)
+
+
+
+
+
+# #2. 모델구성
+# model = Sequential()
+# model.add(Dense(1, input_dim=9))
+# model.add(Dense(3))
+# model.add(Dense(4))
+# model.add(Dense(8))
+# model.add(Dense(1))
+# model.add(Dense(12))
+# model.add(Dense(9))
+# model.add(Dense(6))
+# model.add(Dense(15))
+# model.add(Dense(18))
+# model.add(Dense(3))
+# model.add(Dense(10))
+# model.add(Dense(1))
+
+
+
+
+# #2. 모델구성(함수형)
+input1 = Input(shape=(9,))       #인풋레이어는 
+dense1 = Dense(50, activation= 'relu')(input1)
+dense2 = Dense(40, activation= 'sigmoid')(dense1)
+dense3 = Dense(30, activation= 'relu')(dense2)
+dense4 = Dense(20, activation= 'linear')(dense3)
+output1 = Dense(1, activation= 'linear')(dense4)
+model = Model(inputs=input1, outputs=output1)
+model.summary()
+
+
+
+
 
 #3. 컴파일, 훈련
 #loss = mae or mse optimizer= 'adam', matrix[mae or mse]
-model.compile(loss='mse', optimizer='adam',
-                metrics=['mae'])
-model.fit(x_train, y_train, epochs=600, batch_size=5)
+from tensorflow.keras.callbacks import EarlyStopping
+earlystopping = EarlyStopping(monitor='val_loss', mode='min',
+                              patience=10, restore_best_weights=True, verbose=1) 
+model.compile(loss='mae', optimizer='adam')
+model.fit(x_train, y_train, epochs=1500, batch_size=32, validation_split=(0.2), callbacks=[earlystopping])
 
 #4. 평가, 예측
 
@@ -95,11 +130,29 @@ y_submit = model.predict(test_csv)   #예측한 카운트가 y_submit
 submission['count'] = y_submit
 # print(submission)
  
-submission.to_csv(path + 'submission_01050251.csv')
+submission.to_csv(path + 'submission_010110524.csv')
 
 
 """
 결과
+스케일러 하기 전 
+model.add(Dense(1, input_dim=9))
+model.add(Dense(3))
+model.add(Dense(4))
+model.add(Dense(8))
+model.add(Dense(1))
+model.add(Dense(12))
+model.add(Dense(9))
+model.add(Dense(6))
+model.add(Dense(15))
+model.add(Dense(18))
+model.add(Dense(3))
+model.add(Dense(10))
+model.add(Dense(1))
+ epochs=1500, batch_size=32)  
+RMSE :  53.49819261975194
 
 
+
+minmax 후   RMSE :  54.5560570559554
  """
