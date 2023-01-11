@@ -20,14 +20,34 @@ print(np.unique(y, return_counts=True))      #(array([1, 2, 3, 4, 5, 6, 7]), arr
 # print(y.shape)
 
 #====쉐이프를 맞추는 작업====== 
-import pandas as pd
-from sklearn.preprocessing import OneHotEncoder   # Initialize the OneHotEncoder  #첫 번째 방법 
-ohe = OneHotEncoder()
 
-# Fit the OneHotEncoder on the target variable 'y'
-y = ohe.fit_transform(y.reshape(-1,1)).toarray()  
-# Print the new shape of the target variable 'y'
-print(y.shape)    #(581012, 7)     
+#====================1.keras to_categorical======================================
+from tensorflow.keras.utils import to_categorical
+y = to_categorical(y.reshape(-1,1))
+ # Print the new shape of the target variable 'y'
+print(y.shape)
+print(type(y))
+print(y[:25])
+print(np.unique(y[:,0], return_counts=True))     #  모든 행의 0번째라는 뜻 
+print(np.unique(y[:,1], return_counts=True))     #  모든 행의 0번째라는 뜻 
+print("==========================================")
+y = np.delete(y, 0, axis=1)
+print(y.shape)
+print(y[:10])
+print(np.unique(y[:,0], return_counts=True))     #  모든 행의 0번째라는 뜻 
+
+
+
+
+
+# import pandas as pd
+# from sklearn.preprocessing import OneHotEncoder   # Initialize the OneHotEncoder  #첫 번째 방법 
+# ohe = OneHotEncoder()
+
+# # Fit the OneHotEncoder on the target variable 'y'
+# y = ohe.fit_transform(y.reshape(-1,1)).toarray()  
+# # Print the new shape of the target variable 'y'
+# print(y.shape)    #(581012, 7)     
 
 
 # import pandas as pd                        # 두 번째 방법 
@@ -105,7 +125,7 @@ acc = accuracy_score(y_test, y_predict),
 print(acc)
 
 
-"""
+'''
 OneHotEncoder (첫번째 방법 썼을때) 
 Epoch 00051: early stopping
 걸린시간 :  155.87018036842346
@@ -132,6 +152,4 @@ Epoch 00049: early stopping
 loss :  0.49599209427833557
 accuracy :  0.7823894619941711
 
-
-"""
-
+'''
