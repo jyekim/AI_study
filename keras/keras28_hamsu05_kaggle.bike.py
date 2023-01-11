@@ -49,17 +49,17 @@ print(y_train.shape, y_test.shape)  #   (7620,) (3266,)
 
 
 
-scaler = MinMaxScaler()   #
-scaler.fit(x_train)
-x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-x_test = scaler.transform(x_test)
-
-
-# scaler = StandardScaler()
+# scaler = MinMaxScaler()   #
 # scaler.fit(x_train)
-# x_train = scaler.transform(x_train)     
+# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 # x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
+scaler = StandardScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)     
+x_test = scaler.transform(x_test)
+test_csv = scaler.transform(test_csv)
 
 #2. 모델구성
 # model = Sequential()
@@ -89,7 +89,7 @@ import time
 model.compile(loss='mae', optimizer='adam',)
 from tensorflow.keras.callbacks import EarlyStopping
 earlystopping = EarlyStopping(monitor='val_loss', mode='min',
-                              patience=10, restore_best_weights=True, verbose=1) 
+                              patience=5, restore_best_weights=True, verbose=1) 
 start = time.time()
 hist = model.fit(x_train, y_train, epochs=3000, batch_size=32, validation_split=(0.2), callbacks=[earlystopping])
 end = time.time()
@@ -150,7 +150,7 @@ y_submit = model.predict(test_csv)
 #print(submission)
 submission['count'] = y_submit  # y_submit 저장
 print(submission)
-submission.to_csv(path +"submission_0106.csv")
+submission.to_csv(path +"submission_0111806.csv")
 
 """
 결과
@@ -159,11 +159,11 @@ RMSE :  153.67648720538205
 
 
 스케일러 후 
-MinMaxScaler()   = loss :  138.86819458007812
-                   RMSE :  189.96994826495532
+MinMaxScaler()   = loss :  105.15605926513672
+                   RMSE :  151.8773600528591
                    
-StandardScaler()   = loss :  141.68577575683594
-                     RMSE :  190.2870283205726
+StandardScaler()   =loss :  102.59281158447266
+                    RMSE :  151.88993582764044
 
 
 

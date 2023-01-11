@@ -50,7 +50,7 @@ scaler = MinMaxScaler()   #
 scaler.fit(x_train)
 x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 x_test = scaler.transform(x_test)
-
+test_csv= scaler.transform(test_csv)      # 데스트 데이터도 다 스케일러 해줘야함 
 
 # scaler = StandardScaler()
 # scaler.fit(x_train)

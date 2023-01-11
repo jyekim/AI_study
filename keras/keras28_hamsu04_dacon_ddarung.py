@@ -46,16 +46,17 @@ x_train, x_test, y_train, y_test = train_test_split(x, y,
 print(x_train.shape, x_test.shape)  #   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape)  #   (929,) (399,)
 
-scaler = MinMaxScaler()   #
-scaler.fit(x_train)
-x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-x_test = scaler.transform(x_test)
-
-
-# scaler = StandardScaler()
+# scaler = MinMaxScaler()   #
 # scaler.fit(x_train)
-# x_train = scaler.transform(x_train)     
+# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 # x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
+
+scaler = StandardScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)     
+x_test = scaler.transform(x_test)
+test_csv = scaler.transform(test_csv)
 
 
 
@@ -100,7 +101,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 earlystopping = EarlyStopping(monitor='val_loss', mode='min',
                               patience=10, restore_best_weights=True, verbose=1) 
 model.compile(loss='mae', optimizer='adam')
-model.fit(x_train, y_train, epochs=1500, batch_size=32, validation_split=(0.2), callbacks=[earlystopping])
+model.fit(x_train, y_train, epochs=3000, batch_size=32, validation_split=(0.2), callbacks=[earlystopping])
 
 #4. 평가, 예측
 
@@ -130,7 +131,7 @@ y_submit = model.predict(test_csv)   #예측한 카운트가 y_submit
 submission['count'] = y_submit
 # print(submission)
  
-submission.to_csv(path + 'submission_010110524.csv')
+submission.to_csv(path + 'submission_010110750.csv')
 
 
 """
@@ -154,5 +155,7 @@ RMSE :  53.49819261975194
 
 
 
-minmax 후   RMSE :  54.5560570559554
+standard  후   RMSE :  50.0374192708276   submission 010110743
+
+               RMSE :  48.06867202755687  submission 010110750    
  """
