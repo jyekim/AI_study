@@ -63,31 +63,31 @@ test_csv = scaler.transform(test_csv)
 
 
 #2. 모델구성
-model = Sequential()
-model.add(Dense(1, input_dim=9))
-model.add(Dense(93, activation= 'relu'))
-model.add(Dense(4, activation= 'relu'))
-model.add(Dense(80, activation= 'relu'))
-model.add(Dense(100, activation= 'sigmoid'))
-model.add(Dense(12, activation= 'linear'))
-model.add(Dense(69, activation= 'linear'))
-model.add(Dense(6, activation= 'linear'))
-model.add(Dense(15, activation= 'linear'))
-model.add(Dense(10, activation= 'linear' ))
-model.add(Dense(1, activation= 'linear'))
+# model = Sequential()
+# model.add(Dense(1, input_dim=9))
+# model.add(Dense(93, activation= 'relu'))
+# model.add(Dense(4, activation= 'relu'))
+# model.add(Dense(80, activation= 'relu'))
+# model.add(Dense(100, activation= 'sigmoid'))
+# model.add(Dense(12, activation= 'linear'))
+# model.add(Dense(69, activation= 'linear'))
+# model.add(Dense(6, activation= 'linear'))
+# model.add(Dense(15, activation= 'linear'))
+# model.add(Dense(10, activation= 'linear' ))
+# model.add(Dense(1, activation= 'linear'))
 
 
 
 
-# # #2. 모델구성(함수형)
-# input1 = Input(shape=(9,))       #인풋레이어는 
-# dense1 = Dense(50, activation= 'relu')(input1)
-# dense2 = Dense(40, activation= 'sigmoid')(dense1)
-# dense3 = Dense(30, activation= 'relu')(dense2)
-# dense4 = Dense(20, activation= 'linear')(dense3)
-# output1 = Dense(1, activation= 'linear')(dense4)
-# model = Model(inputs=input1, outputs=output1)
-# model.summary()
+ #2. 모델구성(함수형)
+input1 = Input(shape=(9,))       #인풋레이어는 
+dense1 = Dense(50, activation= 'relu')(input1)
+dense2 = Dense(40, activation= 'sigmoid')(dense1)
+dense3 = Dense(30, activation= 'relu')(dense2)
+dense4 = Dense(20, activation= 'linear')(dense3)
+output1 = Dense(1, activation= 'linear')(dense4)
+model = Model(inputs=input1, outputs=output1)
+model.summary()
 
 
 

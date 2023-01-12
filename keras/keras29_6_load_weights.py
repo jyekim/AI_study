@@ -1,11 +1,13 @@
-from tensorflow.keras.models import Sequential, Model, load_model    #모델을 붙이면 함수형으로 전환
+from tensorflow.keras.models import Sequential, Model    #모델을 붙이면 함수형으로 전환
 from tensorflow.keras.layers import Dense, Input         # Input 붙이면 함수형으로 전환
 import numpy as np
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
- 
+path ='./_save/'
+# path = '../_save/'
+# path = 'c:/study4/_save/'  절대 경로
 
 #1. 데이터
 datasets = load_boston()
@@ -16,14 +18,14 @@ x_train, x_test, y_train, y_test = train_test_split(x, y,
     train_size=0.8, shuffle=True, random_state=42)
   
 
-# scaler = MinMaxScaler()   #
-# #scaler = StandardScaler()   #
+scaler = MinMaxScaler()   #
+#scaler = StandardScaler()   #
 
-# scaler.fit(x_train)
-# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+scaler.fit(x_train)
+x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+x_test = scaler.transform(x_test)
+# x_train = scaler.transform(x_train)     
 # x_test = scaler.transform(x_test)
-# # x_train = scaler.transform(x_train)     
-# # x_test = scaler.transform(x_test)
 
 
 print(x)
@@ -64,26 +66,35 @@ x_train, x_test, y_train, y_test = train_test_split(x, y,
 
 
 # #2. 모델구성(함수형)
-# input1 = Input(shape=(13,))       #인풋레이어는 
-# dense1 = Dense(50, activation= 'relu')(input1)
-# dense2 = Dense(40, activation= 'sigmoid')(dense1)
-# dense3 = Dense(30, activation= 'relu')(dense2)
-# dense4 = Dense(20, activation= 'linear')(dense3)
-# output1 = Dense(1, activation= 'linear')(dense4)
-# model = Model(inputs=input1, outputs=output1)
-# model.summary()
+input1 = Input(shape=(13,))       #인풋레이어는 
+dense1 = Dense(50, activation= 'relu')(input1)
+dense2 = Dense(40, activation= 'sigmoid')(dense1)
+dense3 = Dense(30, activation= 'relu')(dense2)
+dense4 = Dense(20, activation= 'linear')(dense3)
+output1 = Dense(1, activation= 'linear')(dense4)
+model = Model(inputs=input1, outputs=output1)
+model.summary()
 
-path ='./_save/'
-# path = '../_save/'
-# path = 'c:/study4/_save/'  절대 경로
-# model.save(path +'keras29_1_save_model.h5')
-# # model.save('./_save/keras29_save_model.h5')
-                                                                      # 모델만 저장하고 싶으면 모델 위쪽에 하면 됨 
-model = load_model(path + 'keras29_3_save_model.h5')                  # 모델과 가중치 저장 둘 다 하고 싶은 경우 훈련을 시킨 다음 모델을 세이브 
-                                                                      # 
+
+# model.save_weights(path +'keras29_5_save_weights1.h5')
+
+# model.load_weights(path +'keras29_5_save_weights1.h5')     # 이걸 쓸려면 모델이 정해져있어야 한다
+
 
 #3. 컴파일, 훈련
 
+model.compile(loss='mae', optimizer = 'adam')
+# from tensorflow.keras.callbacks import EarlyStopping
+# earlyStopping = EarlyStopping(monitor='val_loss', mode='min',
+#                               patience=30, restore_best_weights=True,
+#                               verbose=1) 
+
+# hist = model.fit(x_train, y_train, epochs=500, batch_size=1,     
+#                 validation_split=0.2, callbacks=[earlyStopping],
+#                 verbose=1)  
+
+model.save_weights(path +'keras29_5_save_weights2.h5')             # 훈련을 시킨 다음 모델을 세이브 했으니 모델과 가중치 저장이 가능함 
+#0.2552637561855202                                                 #saveweights와 savemodel의 차이 
 
 
 #4. 평가, 예측
@@ -104,15 +115,13 @@ print("R2 : ", r2)
 
 """
 결과
-MinMaxScaler()   0.7650891346210034
-StandardScaler()  0.7536570450577647
+
+
+
+
+
+
+
+
+
 """
-
-
-
-
-
-
-
-
-
