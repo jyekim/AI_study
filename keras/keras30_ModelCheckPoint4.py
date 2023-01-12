@@ -1,4 +1,4 @@
-from tensorflow.keras.models import Sequential, Model    #모델을 붙이면 함수형으로 전환
+from tensorflow.keras.models import Sequential, Model, load_model    #모델을 붙이면 함수형으로 전환
 from tensorflow.keras.layers import Dense, Input         # Input 붙이면 함수형으로 전환
 import numpy as np
 from sklearn.datasets import load_boston
@@ -18,7 +18,7 @@ x = datasets.data
 y = datasets['target']  #가격 데이터
 
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-    train_size=0.8, shuffle=True, random_state=42)
+    train_size=0.8, shuffle=True, random_state=1)
   
 
 scaler = MinMaxScaler()   #
@@ -49,15 +49,17 @@ print(type(x))  # <class 'numpy.ndarray'>
 # print(dataset.DESCR)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-    train_size=0.8, shuffle=True, random_state=42)
+    train_size=0.8, shuffle=True, random_state=123)
   
+
+
 
 # #2. 모델구성(함수형)
 input1 = Input(shape=(13,))       #인풋레이어는 
-dense1 = Dense(150, activation= 'relu')(input1)
-dense2 = Dense(400, activation= 'sigmoid')(dense1)
-dense3 = Dense(35, activation= 'relu')(dense2)
-dense4 = Dense(80, activation= 'linear')(dense3)
+dense1 = Dense(50, activation= 'relu')(input1)
+dense2 = Dense(40, activation= 'sigmoid')(dense1)
+dense3 = Dense(30, activation= 'relu')(dense2)
+dense4 = Dense(20, activation= 'linear')(dense3)
 output1 = Dense(1, activation= 'linear')(dense4)
 model = Model(inputs=input1, outputs=output1)
 model.summary()                     
@@ -72,40 +74,73 @@ model.summary()
 
 model.compile(loss='mse', optimizer = 'adam', metrics=['mae'])
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_loss', mode='min',
-                              patience=20, restore_best_weights=True,
+es = EarlyStopping(monitor='val_loss', mode='min', patience=20,
+                              restore_best_weights=True,
                               verbose=1) 
 
-mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
-                      filepath= path + 'MCP/keras30_ModelCheckPoint1.hdf5')
 
-hist = model.fit(x_train, y_train, epochs=1500, batch_size=1,     
+import datetime
+date = datetime.datetime.now()                #현재 시간이 저장된다 
+print(date)                                  #2023-01-12 14:58:05.884579
+print(type(date))                            #<class 'datetime.datetime'>   
+date = date.strftime("%m%d_%H%M")             #0112_1503   오늘의 날짜와 시간                    
+print(date)
+print(type(date))
+
+
+filepath = './_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 4epoch의 4자리, loss의소수 넷째짜리까지 즉, 파일 생성된 시간과성능이 있는 파일이름
+
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
+                      filepath= filepath + 'k30' + date + '_' + filename)
+
+model.fit(x_train, y_train, epochs=5000, batch_size=1,     
                 validation_split=0.2, callbacks=[es, mcp],
                 verbose=1)  
 
-model.save(path +'keras29_3_save_model.h5')              # 훈련을 시킨 다음 모델을 세이브 했으니 모델과 가중치 저장이 가능함 
+
+model.save(path +"keras30_ModelCheckPoint3_save_model.hdf5")
+
+
+
+          # 훈련을 시킨 다음 모델을 세이브 했으니 모델과 가중치 저장이 가능함 
 #0.2552637561855202
 
 
+# model = load_model(path + 'MCP/keras30_ModelCheckPoint1.hdf5')
+
 #4. 평가, 예측
+print("========================1.기본출력 =======================")
 loss = model.evaluate(x_test, y_test)
 print('loss : ', loss)
 
 y_predict = model.predict(x_test)
 
-def RMSE(y_test, y_predict):
-    return np.sqrt(mean_squared_error(y_test, y_predict))
+# def RMSE(y_test, y_predict):
+#     return np.sqrt(mean_squared_error(y_test, y_predict))
 
-print("RMSE : ", RMSE(y_test, y_predict))
+# print("RMSE : ", RMSE(y_test, y_predict))
 
 r2 = r2_score(y_test, y_predict)
-print("R2 : ", r2)
+print("R2스코어 : ", r2)
+
+
+
 
 
 
 """
 결과
-MCP 저장 :  R2 :  0.7357665013704857
+========================1.기본출력 =======================
+4/4 [==============================] - 0s 1ms/step - loss: 54.1879 - mae: 5.1368
+loss :  [54.18791961669922, 5.13683557510376]
+R2스코어 :  0.2610783062345804
+========================2.load model 출력 =======================
+R2스코어 :  0.2610783062345804
+========================3.ModelCheckPoint 출력 =======================
+R2스코어 :  0.2610783062345804
+
+
 """
 
 
