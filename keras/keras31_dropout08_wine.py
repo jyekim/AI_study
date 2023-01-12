@@ -1,9 +1,13 @@
 import numpy as np              
 from sklearn.datasets import load_wine
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+
+path = './_save/'
+
 
 #1. 데이터   와인데이터 
 datasets = load_wine()
@@ -24,10 +28,10 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=333, test_size=0.2, stratify=y)
 
 
-scaler = MinMaxScaler()   #
-scaler.fit(x_train)
-x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-x_test = scaler.transform(x_test)
+# scaler = MinMaxScaler()   #
+# scaler.fit(x_train)
+# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+# x_test = scaler.transform(x_test)
 
 
 # scaler = StandardScaler()
@@ -36,28 +40,64 @@ x_test = scaler.transform(x_test)
 # x_test = scaler.transform(x_test)
 
 #2.모델구성 
-model= Sequential()
-model.add(Dense(100, activation='relu', input_shape=(13, )))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(82, activation='relu'))
-model.add(Dense(511, activation='relu'))
-model.add(Dense(30, activation='relu'))
-model.add(Dense(75, activation='linear'))
-model.add(Dense(9, activation='linear'))
-model.add(Dense(20, activation='linear'))
-model.add(Dense(3, activation='softmax')) 
+# model= Sequential()
+# model.add(Dense(100, activation='relu', input_shape=(13, )))
+# model.add(Dropout(0.5))
+# model.add(Dense(50, activation='relu'))
+# model.add(Dense(82, activation='relu'))
+# model.add(Dropout(0.3))
+# model.add(Dense(511, activation='relu'))
+# model.add(Dense(30, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(75, activation='linear'))
+# model.add(Dense(9, activation='linear'))
+# model.add(Dense(20, activation='linear'))
+# model.add(Dense(3, activation='softmax')) 
+
+
+# #2. 모델구성(함수형)
+input1 = Input(shape=(13,))       #인풋레이어는 
+dense1 = Dense(50, activation= 'relu')(input1)
+drop1 = Dropout(0.5)(dense1)
+dense2 = Dense(40, activation= 'sigmoid')(drop1)
+drop2= Dropout(0.3)(dense2) 
+dense3 = Dense(30, activation= 'relu')(drop2)
+drop3 = Dropout(0.2)(dense3)
+dense4 = Dense(20, activation= 'linear')(drop3)
+output1 = Dense(3, activation= 'softmax')(dense4)
+model = Model(inputs=input1, outputs=output1)
+model.summary()
+
+
 
 #3.컴파일, 훈련
 
 model.compile(loss = 'categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-from tensorflow.keras.callbacks import EarlyStopping
-earlyStopping = EarlyStopping(monitor='val_loss', mode='min',
-                              patience=30, restore_best_weights=True,
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+es= EarlyStopping(monitor='val_loss', mode='min',
+                              patience=10, restore_best_weights=True,
                               verbose=1) 
-hist = model.fit(x_train, y_train, epochs=500, batch_size=10,
-          validation_split=0.2, callbacks=[earlyStopping],
-          verbose=1) 
 
+import datetime
+date = datetime.datetime.now()
+print(date)
+print(type(date))
+date = date.strftime("%m%d_%H%M")
+print(date)
+print(type(date))
+
+filepath = './_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
+                      filepath= filepath +'k31_08_' + date + '_'+ filename)
+
+
+
+hist = model.fit(x_train, y_train, epochs=500, batch_size=10,
+          validation_split=0.2, callbacks=[es,mcp],
+          verbose=1) 
+model.save(path +"keras31_dropout08_save_model.hdf5")
 
 #4.평가 예측 
 loss, accuracy = model.evaluate(x_test, y_test)
@@ -91,5 +131,5 @@ print(acc)
  MinMaxScaler :   0.3888888955116272
  StandardScaler :   accuracy :  0.3888888955116272
     
-    
+    drop out : accuracy :  0.3888888955116272
 """

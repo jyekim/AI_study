@@ -1,12 +1,14 @@
 #실습 R2 0.62이상
 
-from sklearn.datasets import load_diabetes
+from sklearn.datasets import load_diabetes 
 from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Dense, Input, Dropout 
 import numpy as np         
 from sklearn.model_selection import train_test_split 
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+path = './_save/'
 
 
 #1. 데이터
@@ -15,8 +17,7 @@ dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
 x_train, x_test, y_train, y_test= train_test_split(x, y,
-    train_size=0.7, random_state=66
-) 
+    train_size=0.7, random_state=1) 
 
 # print(x)
 # print(x.shape) #(442, 10)
@@ -27,7 +28,7 @@ x_train, x_test, y_train, y_test= train_test_split(x, y,
 # print ('y_train : ', y_train) 
 # print ('y_test : ', y_test) 
 
-scaler = MinMaxScaler()   #
+scaler = MinMaxScaler()   
 scaler.fit(x_train)
 x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 x_test = scaler.transform(x_test)
@@ -68,7 +69,7 @@ model = Model(inputs=input1, outputs=output1)
 model.summary()
 
 #3.컴파일 훈련
-model.compile(loss='mse', optimizer='adam') 
+model.compile(loss='mae', optimizer='adam', metrics=['mae']) 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', mode='min', 
                              patience=10, restore_best_weights=True, verbose=1)
@@ -91,7 +92,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only
 hist = model.fit(x_train, y_train, epochs=200, batch_size=5, callbacks=[es,mcp], validation_split=0.2)
 
 
-
+model.save(path +"keras31_dropout03_save_model.hdf5")
 
 
 loss = model.evaluate(x_test, y_test)
@@ -137,7 +138,7 @@ def RMSE(y_test, y_predict):
 print("RMSE : ", RMSE(y_test, y_predict))  
 
 r2 = r2_score(y_test, y_predict)
-print("R2 : ", r2)
+print("R2스코어 : ", r2)
 
 
 """

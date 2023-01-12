@@ -107,11 +107,11 @@ filepath = './_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
-                      filepath= filepath +'k31_02' + date+ '_'+ filename)
+                      filepath= filepath +'k31_02_' + date + '_'+ filename)
 
 hist = model.fit(x_train, y_train, epochs=100, batch_size=10, validation_split=0.2, callbacks=[es,mcp], verbose=1) 
 
-model.save(path +"keras31_dropout2_save_model.hdf5")
+model.save(path +"keras31_dropout02_save_model.hdf5")
 
 #4. 평가 예측
 loss = model.evaluate(x_test, y_test)
@@ -157,7 +157,7 @@ def RMSE(y_test, y_predict):
 print("RMSE : ", RMSE(y_test, y_predict))  
 
 r2 = r2_score(y_test, y_predict)
-print("R2 : ", r2)
+print("R2스코어: ", r2)
 #r2는높으면 성능이 좋다라는 것을 알 수 있다. 
 
 
@@ -169,7 +169,7 @@ RMSE :  0.7219690915215492
 R2 :  0.6058052861157378
 
 스케일링 후 : 
-MinMaxScaler(R2 :  -0.0036923509054829218...?
+MinMaxScaler(R2 :  
 
 StandardScaler : RMSE :  0.69273476311703
                   R2 :  0.6370828013168781

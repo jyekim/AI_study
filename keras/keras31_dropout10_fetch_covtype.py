@@ -2,8 +2,10 @@ import numpy as np
 from sklearn.datasets import fetch_covtype
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.layers import Dense, Input, Dropout
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+path = './_save/'
 
 
 #1.  데이터
@@ -129,10 +131,13 @@ print(type(x))
 #2. 모델구성 
 # model = Sequential()
 # model.add(Dense(5, activation= 'relu', input_shape=(54, )))
+# model.add(Dropout(0.5))
 # model.add(Dense(10, activation='relu'))
 # model.add(Dense(430, activation='relu'))
+# model.add(Dropout(0.3))
 # model.add(Dense(250, activation='relu'))
 # model.add(Dense(73, activation='relu'))
+# model.add(Dropout(0.2))
 # model.add(Dense(92, activation='relu'))
 # model.add(Dense(7, activation= 'softmax'))
 
@@ -140,9 +145,12 @@ print(type(x))
 #2. 모델구성(함수형)
 input1 = Input(shape=(54,))       #인풋레이어는 
 dense1 = Dense(50, activation= 'relu')(input1)
-dense2 = Dense(40, activation= 'sigmoid')(dense1)
-dense3 = Dense(30, activation= 'relu')(dense2)
-dense4 = Dense(20, activation= 'linear')(dense3)
+drop1 = Dropout(0.5)(dense1)
+dense2 = Dense(40, activation= 'sigmoid')(drop1)
+drop2= Dropout(0.3)(dense2) 
+dense3 = Dense(30, activation= 'relu')(drop2)
+drop3 = Dropout(0.2)(dense3)
+dense4 = Dense(20, activation= 'linear')(drop3)
 output1 = Dense(7, activation= 'softmax')(dense4)
 model = Model(inputs=input1, outputs=output1)
 model.summary()
@@ -150,16 +158,31 @@ model.summary()
 
 
 #3.컴파일, 훈련 
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 model.compile(loss = 'categorical_crossentropy', optimizer='adam', metrics=['accuracy'])          
-earlystopping = EarlyStopping(monitor='val_loss', mode='min', patience=10, restore_best_weights=True, verbose=1)
-import time
-start = time.time()
+es = EarlyStopping(monitor='val_loss', mode='min', patience=10, restore_best_weights=True, verbose=1)
+
+import datetime
+date = datetime.datetime.now()
+print(date)
+print(type(date))
+date = date.strftime("%m%d_%H%M")
+print(date)
+print(type(date))
+
+filepath = './_save/MCP/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+
+mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
+                      filepath= filepath +'k31_10_' + date + '_'+ filename)
+
+
 model.fit(x_train, y_train, epochs=50, batch_size=100, 
-          validation_split=0.2, callbacks=[earlystopping], verbose=1)
-end = time.time()
-print('걸린시간 : ', end- start)
+          validation_split=0.2, callbacks=[es,mcp], verbose=1)
+
+
+model.save(path +"keras31_dropout10_save_model.hdf5")
 
 #4. 평가 예측 
 loss, accuracy = model.evaluate(x_test, y_test)   
@@ -187,6 +210,14 @@ print(acc)
 
 
 '''
+
+dropout 했을 떄 loss :  0.5446786284446716
+              accuracy :  0.7677512764930725
+
+
+
+
+
 scaler 하기 전 : loss :  0.4136052131652832
                 accuracy :  0.8242127895355225
 

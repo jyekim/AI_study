@@ -1,7 +1,7 @@
 import numpy as np              
 from sklearn.datasets import load_wine
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
@@ -36,16 +36,29 @@ x_test = scaler.transform(x_test)
 # x_test = scaler.transform(x_test)
 
 #2.모델구성 
-model= Sequential()
-model.add(Dense(100, activation='relu', input_shape=(13, )))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(82, activation='relu'))
-model.add(Dense(511, activation='relu'))
-model.add(Dense(30, activation='relu'))
-model.add(Dense(75, activation='linear'))
-model.add(Dense(9, activation='linear'))
-model.add(Dense(20, activation='linear'))
-model.add(Dense(3, activation='softmax')) 
+# model= Sequential()
+# model.add(Dense(100, activation='relu', input_shape=(13, )))
+# model.add(Dense(50, activation='relu'))
+# model.add(Dense(82, activation='relu'))
+# model.add(Dense(511, activation='relu'))
+# model.add(Dense(30, activation='relu'))
+# model.add(Dense(75, activation='linear'))
+# model.add(Dense(9, activation='linear'))
+# model.add(Dense(20, activation='linear'))
+# model.add(Dense(3, activation='softmax')) 
+
+
+# #2. 모델구성(함수형)
+input1 = Input(shape=(13,))       #인풋레이어는 
+dense1 = Dense(50, activation= 'relu')(input1)
+dense2 = Dense(40, activation= 'sigmoid')(dense1)
+dense3 = Dense(30, activation= 'relu')(dense2)
+dense4 = Dense(20, activation= 'linear')(dense3)
+output1 = Dense(3, activation= 'softmax')(dense4)
+model = Model(inputs=input1, outputs=output1)
+model.summary()
+
+
 
 #3.컴파일, 훈련
 
