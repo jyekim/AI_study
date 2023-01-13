@@ -3,7 +3,9 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
+from sklearn.metrics import accuracy_score
+import numpy as np                                                            
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 path = './_save/'
 

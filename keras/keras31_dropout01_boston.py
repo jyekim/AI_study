@@ -113,7 +113,7 @@ filepath = './_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 4epoch의 4자리, loss의소수 넷째짜리까지 즉, 파일 생성된 시간과성능이 있는 파일이름
 
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
-                      filepath= filepath + 'k31_01' + date + '_' + filename)
+                      filepath= filepath + 'k31_01_' + date + '_' + filename)
 
 model.fit(x_train, y_train, epochs=5000, batch_size=1,     
                 validation_split=0.2, callbacks=[es, mcp],
