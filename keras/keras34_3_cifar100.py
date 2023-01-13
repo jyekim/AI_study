@@ -10,7 +10,7 @@ path ='.c:/study4/_save/'
 
 (x_train, y_train), (x_test, y_test) = cifar100.load_data()
 
-x_train = x_train / 255
+x_train = x_train / 255                               #scaler가 된거인듯? 픽셀의 최대값이 255이니깐 
 x_test = x_test / 255
 print(x_train.shape, y_train.shape)              
 print(x_test.shape, y_test.shape)                     #(50000, 32, 32, 3) (50000, 1)         (10000, 32, 32, 3) (10000, 1)
@@ -37,13 +37,13 @@ model.add(Conv2D(filters=128, kernel_size=(3,3), input_shape=(32, 32, 3), activa
 model.add(MaxPooling2D((2, 2)))
 model.add(Conv2D(filters=64, kernel_size=(3,3)))#(30, 30, 64)
 model.add(Dropout(0.2))
-model.add(Conv2D(filters=32, kernel_size=(2,2)))     #(29, 29, 64)
+model.add(Conv2D(filters=32, kernel_size=(2,2)))     #(29, 29, 32)
 model.add(Dropout(0.1))
-model.add(MaxPooling2D((2, 2)))                        # 53824
-model.add(Dense(32, activation='relu'))              #input_shape= (500000, 53824) 근데 행 무시하니깐 결과적으로 (53824, )
+model.add(MaxPooling2D((2, 2)))                       
+model.add(Dense(32, activation='relu'))              
 model.add(Dropout(0.5))
 model.add(Flatten())         
-model.add(Dense(100, activation='softmax'))
+model.add(Dense(100, activation='softmax'))     #input_shape= (500000, 53824) 근데 행 무시하니깐 결과적으로 (53824, )
 model.summary()
 
 
@@ -78,3 +78,14 @@ results =model.evaluate(x_test, y_test)
 print('loss : ', results[0])
 print('acc : ', results[1])
 
+
+"""
+베스트 결과값
+Epoch 00092: val_loss improved from 2.46507 to 2.43583, saving model to ./_save/MCP\k34_03_0113_1959_0092-2.4358.hdf5
+1250/1250 [==============================] - 8s 6ms/step - loss: 2.0384 - acc: 0.4557 - val_loss: 2.4358 - val_acc: 0.4073
+
+
+loss :  2.4619898796081543
+acc :  0.4011000096797943
+
+    """

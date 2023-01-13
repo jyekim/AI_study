@@ -17,12 +17,12 @@ path = 'c:/study4/_save/'
 
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(filters=200, kernel_size=(3,3), input_shape=(32, 32, 3), activation='relu')) #(31, 31, 128)
+model.add(Conv2D(filters=200, kernel_size=(3,3), input_shape=(32, 32, 3), activation='relu')) #(31, 31, 200)
 model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(filters=100, kernel_size=(2,2)))#(30, 30, 64)
+model.add(Conv2D(filters=100, kernel_size=(2,2)))#(30, 30, 100)
 model.add(MaxPooling2D((2, 2)))
 model.add(Conv2D(filters=70, kernel_size=(3,3), activation='relu')) 
-model.add(Flatten())                                 # 53824
+model.add(Flatten())                                 
 model.add(Dense(10, activation='softmax'))
 # model.summary()
 
@@ -60,6 +60,7 @@ print('acc : ', results[1])
 
 
 """
+
 결과값 : 
 
 
