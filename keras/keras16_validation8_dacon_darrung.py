@@ -8,7 +8,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 #1. 데이터
-path = './_data/ddarung/'
+# path = './_data/ddarung/'
+path = '../_data/ddarung/'         #이거는 keras폴더로만 사용해서 gpu돌리게 될때 경로 재설정
+# path = 'c:/study/_data/ddarung/'   #이거는 cpu gpu 둘 다 쓸때 경로 설정 없이 가능함
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)
 # train_csv = pd.read_csv('./_data/ddarung/train.csv', index_col=0)    # 원래 해야하는거, index_col=0 == 0번째는 데이터 아니다.
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
@@ -46,25 +48,24 @@ print(y_train.shape, y_test.shape)  #   (929,) (399,)
 
 #2. 모델구성
 model = Sequential()
-model.add(Dense(1, input_dim=9))
-model.add(Dense(3))
-model.add(Dense(4))
-model.add(Dense(8))
-model.add(Dense(1))
-model.add(Dense(12))
-model.add(Dense(9))
-model.add(Dense(6))
-model.add(Dense(15))
-model.add(Dense(18))
-model.add(Dense(3))
-model.add(Dense(10))
-model.add(Dense(1))
+model.add(Dense(1, input_dim=9, activation='relu'))
+model.add(Dense(3, activation='relu'))
+model.add(Dense(4, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(1, activation='relu'))
+model.add(Dense(12, activation='relu'))
+model.add(Dense(9, activation='relu'))
+model.add(Dense(6, activation='relu'))
+model.add(Dense(15, activation='relu'))
+model.add(Dense(18, activation='relu'))
+model.add(Dense(10, activation='linear' ))
+model.add(Dense(1, activation='linear'))
 
 #3. 컴파일, 훈련
 #loss = mae or mse optimizer= 'adam', matrix[mae or mse]
 model.compile(loss='mse', optimizer='adam',
                 metrics=['mae'])
-model.fit(x_train, y_train, epochs=1500, batch_size=32)
+model.fit(x_train, y_train, epochs=600, batch_size=5)
 
 #4. 평가, 예측
 
