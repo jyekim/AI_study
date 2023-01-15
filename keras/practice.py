@@ -1,17 +1,19 @@
-import numpy as np                              
-from tensorflow.keras.models import Sequential  
-from tensorflow.keras.layers import Dense
-from sklearn.model_selection import train_test_split 
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
+import tensorflow as tf  
+ 
+# Display the version
+print(tf.__version__)    
+ 
+# other imports
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.layers import Input, Conv2D, Dense, Flatten, Dropout
+from tensorflow.keras.layers import GlobalMaxPooling2D, MaxPooling2D
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.models import Model
 
-#1. 데이터 
-
-dataset = load_diabetes()
-x = dataset.data
-y = dataset.target                           
-x_train, x_test, y_train, y_test = train_test_split(X, y,
-        train_size=0.7, random_state=123, shuffle=True )
-
-print(x.shape)
+# Load in the data
+cifar10 = tf.keras.datasets.cifar10
+ 
+# Distribute it to train and test set
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
