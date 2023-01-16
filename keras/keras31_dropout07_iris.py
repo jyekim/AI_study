@@ -38,9 +38,9 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True,
                                                      random_state=333, test_size=0.2, stratify=y)   #false의 문제점은?  stratify=ㅛ 옵션을 넣어주면 한쪽으로 치우쳐지는거 배제됨
 
 
- scaler = MinMaxScaler()   #
+scaler = MinMaxScaler()   #
 # scaler.fit(x_train)
- x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+x_train = scaler.fit_transform(x_train)   #minmaxscaler  
  x_test = scaler.transform(x_test)
 
 
