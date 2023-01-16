@@ -4,6 +4,7 @@ from tensorflow.keras.layers import Dense, Input, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 import numpy as np                                                            
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
@@ -21,8 +22,8 @@ x = datasets.data
 y = datasets['target']
 # print(x) 
 # print(y)
-print(x.shape)
-print(y.shape)   #(150, 4),  (150, )
+# print(x.shape)
+# print(y.shape)   #(150, 4),  (150, )
 
 
 from tensorflow.keras.utils import to_categorical 
@@ -37,10 +38,10 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True,
                                                      random_state=333, test_size=0.2, stratify=y)   #false의 문제점은?  stratify=ㅛ 옵션을 넣어주면 한쪽으로 치우쳐지는거 배제됨
 
 
-# scaler = MinMaxScaler()   #
+ scaler = MinMaxScaler()   #
 # scaler.fit(x_train)
-# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-# x_test = scaler.transform(x_test)
+ x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+ x_test = scaler.transform(x_test)
 
 
 # scaler = StandardScaler()
@@ -108,7 +109,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only
 
 model.fit(x_train, y_train, epochs=100, batch_size=1,
           validation_split=0.2,
-          verbose=1) 
+          verbose=1, callbacks =[es, mcp]) 
 
 model.save(path +"keras31_dropout07_save_model.hdf5")
 
