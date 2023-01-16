@@ -78,3 +78,14 @@ plt.plot(label='acc', color='red')
 plt.plot(label='val_acc', color='green')
 plt.legend()
 
+#select the image from our test dataset
+image_number = 0
+
+#display the image
+plt.imshow(x_test[image_number])
+
+#load the image in an array
+n = np.array(x_test[image_number])
+
+#reshape it
+p = n.reshape(1, 32, 32, 3)
