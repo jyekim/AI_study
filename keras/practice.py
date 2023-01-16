@@ -72,3 +72,9 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 model.fit(x_train, y_train,
  validation_data=(x_test, y_test), epochs=50)
+
+ #plot
+plt.plot(label='acc', color='red')
+plt.plot(label='val_acc', color='green')
+plt.legend()
+
