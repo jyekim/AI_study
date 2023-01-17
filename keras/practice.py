@@ -64,37 +64,35 @@ test_csv = scaler.transform(test_csv)
 
 
 #2. 모델구성
-# model = Sequential()
-# model.add(Dense(1, input_dim=9))
-# model.add(Dropout(0.5))
-# model.add(Dense(93, activation= 'relu'))
-# model.add(Dense(4, activation= 'relu'))
-# model.add(Dropout(0.3))
-# model.add(Dense(80, activation= 'relu'))
-# model.add(Dense(100, activation= 'sigmoid'))
-# model.add(Dropout(0.2))
-# model.add(Dense(12, activation= 'linear'))
-# model.add(Dense(69, activation= 'linear'))
-# model.add(Dense(6, activation= 'linear'))
-# model.add(Dense(15, activation= 'linear'))
-# model.add(Dense(10, activation= 'linear' ))
-# model.add(Dense(1, activation= 'linear'))
+model = Sequential()
+model.add(Dense(1, input_dim=9))
+model.add(Dropout(0.5))
+model.add(Dense(93, activation= 'relu'))
+model.add(Dense(4, activation= 'relu'))
+model.add(Dropout(0.3))
+model.add(Dense(80, activation= 'relu'))
+model.add(Dense(100, activation= 'sigmoid'))
+model.add(Dense(12, activation= 'linear'))
+model.add(Dense(69, activation= 'linear'))
+model.add(Dense(15, activation= 'linear'))
+model.add(Dense(10, activation= 'linear' ))
+model.add(Dense(1, activation= 'linear'))
 
 
 
 
  #2. 모델구성(함수형)
-input1 = Input(shape=(9,))       #인풋레이어는 
-dense1 = Dense(50, activation= 'relu')(input1)
-drop1 = Dropout(0.5)(dense1)
-dense2 = Dense(40, activation= 'sigmoid')(drop1)
-drop2= Dropout(0.3)(dense2) 
-dense3 = Dense(30, activation= 'relu')(drop2)
-drop3 = Dropout(0.2)(dense3)
-dense4 = Dense(20, activation= 'linear')(drop3)
-output1 = Dense(1, activation= 'linear')(dense4)
-model = Model(inputs=input1, outputs=output1)
-model.summary()
+# input1 = Input(shape=(9,))       #인풋레이어는 
+# dense1 = Dense(50, activation= 'relu')(input1)
+# drop1 = Dropout(0.5)(dense1)
+# dense2 = Dense(40, activation= 'sigmoid')(drop1)
+# drop2= Dropout(0.3)(dense2) 
+# dense3 = Dense(30, activation= 'relu')(drop2)
+# drop3 = Dropout(0.2)(dense3)
+# dense4 = Dense(20, activation= 'linear')(drop3)
+# output1 = Dense(1, activation= 'linear')(dense4)
+# model = Model(inputs=input1, outputs=output1)
+# model.summary()
 
 
 
@@ -114,8 +112,8 @@ date = date.strftime("%m%d_%H%M")
 print(date)
 print(type(date))
 
-filepath = './_save/MCP/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+# filepath = './_save/MCP/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
                       filepath= filepath +'k31_04_' + date + '_'+ filename)
@@ -123,7 +121,7 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only
 model.fit(x_train, y_train, epochs=1500, batch_size=32, validation_split=(0.2), callbacks=[es,mcp])
 
 
-model.save(path +"keras31_dropout04_save_model.hdf5")
+# model.save(path +"keras31_dropout04_save_model.hdf5")
 
 
 
@@ -155,7 +153,7 @@ y_submit = model.predict(test_csv)   #예측한 카운트가 y_submit
 submission['count'] = y_submit
 # print(submission)
  
-submission.to_csv(path + 'submission_01171045.csv')
+# submission.to_csv(path + 'submission_01171045.csv')
 
 
 """
@@ -163,6 +161,9 @@ submission.to_csv(path + 'submission_01171045.csv')
 
 dropout 후  RMSE :  45.77021134356291
 
+
+
+RMSE :  46.21313782099082
 """
 
 
