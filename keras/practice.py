@@ -72,12 +72,11 @@ model.add(Dense(4, activation= 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(80, activation= 'relu'))
 model.add(Dense(100, activation= 'sigmoid'))
-model.add(Dense(12, activation= 'linear'))
-model.add(Dense(69, activation= 'linear'))
-model.add(Dense(15, activation= 'linear'))
-model.add(Dense(10, activation= 'linear' ))
+model.add(Dense(12, activation= 'relu'))
+model.add(Dense(69, activation= 'relu'))
+model.add(Dense(15, activation= 'relu'))
+model.add(Dense(10, activation= 'relu' ))
 model.add(Dense(1, activation= 'linear'))
-
 
 
 
