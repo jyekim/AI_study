@@ -1,7 +1,7 @@
 import numpy as np              
 from sklearn.datasets import load_wine
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.layers import Dense, Input, Dropout, Conv2D, Flatten
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
@@ -35,8 +35,8 @@ x_test = scaler.transform(x_test)
 print(x_train.shape, x_test.shape)   #(142, 13) (36, 13)
 
 
-x_train = x_train.reshape(142, 13, 1)
-x_test = x_test.reshape(36, 13, 1)
+x_train = x_train.reshape(142, 13, 1, 1)
+x_test = x_test.reshape(36, 13, 1, 1)
 print(x_train.shape, x_test.shape)
 
 # scaler = StandardScaler()
@@ -44,34 +44,34 @@ print(x_train.shape, x_test.shape)
 # x_train = scaler.transform(x_train)     
 # x_test = scaler.transform(x_test)
 
-"""#2.모델구성 
-# model= Sequential()
-# model.add(Dense(100, activation='relu', input_shape=(13, )))
-# model.add(Dropout(0.5))
-# model.add(Dense(50, activation='relu'))
-# model.add(Dense(82, activation='relu'))
-# model.add(Dropout(0.3))
-# model.add(Dense(511, activation='relu'))
-# model.add(Dense(30, activation='relu'))
-# model.add(Dropout(0.2))
-# model.add(Dense(75, activation='linear'))
-# model.add(Dense(9, activation='linear'))
-# model.add(Dense(20, activation='linear'))
-# model.add(Dense(3, activation='softmax')) 
+#2.모델구성 
+model= Sequential()
+model.add(Conv2D(100, (2,1), input_shape=(13, 1, 1), activation='relu'))
+model.add(Flatten())
+model.add(Dense(50, activation='relu'))
+model.add(Dense(82, activation='relu'))
+model.add(Dropout(0.3))
+model.add(Dense(511, activation='relu'))
+model.add(Dense(30, activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(75, activation='linear'))
+model.add(Dense(9, activation='linear'))
+model.add(Dense(20, activation='linear'))
+model.add(Dense(3, activation='softmax')) 
 
 
 # #2. 모델구성(함수형)
-input1 = Input(shape=(13,))       #인풋레이어는 
-dense1 = Dense(50, activation= 'relu')(input1)
-drop1 = Dropout(0.5)(dense1)
-dense2 = Dense(40, activation= 'sigmoid')(drop1)
-drop2= Dropout(0.3)(dense2) 
-dense3 = Dense(30, activation= 'relu')(drop2)
-drop3 = Dropout(0.2)(dense3)
-dense4 = Dense(20, activation= 'linear')(drop3)
-output1 = Dense(3, activation= 'softmax')(dense4)
-model = Model(inputs=input1, outputs=output1)
-model.summary()
+# input1 = Input(shape=(13,))       #인풋레이어는 
+# dense1 = Dense(50, activation= 'relu')(input1)
+# drop1 = Dropout(0.5)(dense1)
+# dense2 = Dense(40, activation= 'sigmoid')(drop1)
+# drop2= Dropout(0.3)(dense2) 
+# dense3 = Dense(30, activation= 'relu')(drop2)
+# drop3 = Dropout(0.2)(dense3)
+# dense4 = Dense(20, activation= 'linear')(drop3)
+# output1 = Dense(3, activation= 'softmax')(dense4)
+# model = Model(inputs=input1, outputs=output1)
+# model.summary()
 
 
 
@@ -95,14 +95,14 @@ filepath = './_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
-                      filepath= filepath +'k31_08_' + date + '_'+ filename)
+                      filepath= filepath +'k39_08_' + date + '_'+ filename)
 
 
 
 hist = model.fit(x_train, y_train, epochs=500, batch_size=10,
           validation_split=0.2, callbacks=[es,mcp],
           verbose=1) 
-model.save(path +"keras31_dropout08_save_model.hdf5")
+# model.save(path +"keras3_dropout08_save_model.hdf5")
 
 #4.평가 예측 
 loss, accuracy = model.evaluate(x_test, y_test)
@@ -126,9 +126,17 @@ print(y_predict)
 
 acc = accuracy_score(y_test, y_predict)     # 소수점 들어가는 실수 형태로 구성// error 발생
 print(acc)
-"""
+
 
 """결과
+
+ CNN  
+ Epoch 00020: early stopping
+2/2 [==============================] - 0s 8ms/step - loss: 0.3090 - accuracy: 0.9167
+loss : ,loss
+accuracy :  0.9166666865348816
+
+
 데이터가 적으니 스케일러 안하는게 더 나음
     accuracy :  0.9166666865348816
     

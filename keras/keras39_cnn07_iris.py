@@ -1,3 +1,5 @@
+#수정 못함
+
 from sklearn.datasets import load_iris   
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input, Dropout, Conv2D, Flatten
