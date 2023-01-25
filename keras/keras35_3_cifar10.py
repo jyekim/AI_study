@@ -8,23 +8,29 @@ path = 'c:/study4/_save/'
 
 #1. 데이터 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-# print(x_train.shape, y_train.shape)               
-# print(x_test.shape, y_test.shape)               #(50000, 32, 32, 3) (50000, 1) (10000, 32, 32, 3) (10000, 1)
+print(x_train.shape, y_train.shape)               
+print(x_test.shape, y_test.shape)               #(50000, 32, 32, 3) (50000, 1) (10000, 32, 32, 3) (10000, 1)
 
-# print(np.unique(y_train, return_counts=True))   #(array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000] dtype=int64))
+print(np.unique(y_train, return_counts=True))   #(array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000] dtype=int64))
 
+x_train = x_train / 255.                            
+x_test = x_test / 255.
 
 
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(filters=200, kernel_size=(3,3), input_shape=(32, 32, 3), activation='relu')) #(31, 31, 200)
-model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(filters=100, kernel_size=(2,2)))#(30, 30, 100)
-model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(filters=200, kernel_size=(3,3), 
+                 input_shape=(32, 32, 3), 
+                 activation='relu', 
+                 padding='same',
+                 strides=2)) 
+#model.add(MaxPooling2D((2, 2)))
+model.add(Conv2D(filters=100, kernel_size=(2,2), padding='same'))#(30, 30, 100)
+#model.add(MaxPooling2D((2, 2)))
 model.add(Conv2D(filters=70, kernel_size=(3,3), activation='relu')) 
 model.add(Flatten())                                 
 model.add(Dense(10, activation='softmax'))
-# model.summary()
+model.summary()
 
 
 #3.컴파일 훈련 
@@ -45,12 +51,13 @@ print(type(date))
 filepath = './_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
-                      filepath= filepath + 'k34_02_' + date + '_' + filename)
+                      filepath= filepath + 'k35_03_' + date + '_' + filename)
 
 model.fit(x_train, y_train, epochs=100, verbose=1, batch_size=32,
           validation_split=0.2, callbacks=[es, mcp])
 
-# model.save(path +"keras34_02_ModelCheckPoint1_save_model.hdf5")
+
+# model.save(path +"keras35_03_ModelCheckPoint1_save_model.hdf5")
 
 #평가 예측   
 results =model.evaluate(x_test, y_test)
@@ -61,18 +68,10 @@ print('acc : ', results[1])
 """
 
 결과값 : 
-
-
-model = Sequential()
-model.add(Conv2D(filters=200, kernel_size=(3,3), input_shape=(32, 32, 3), activation='relu')) #(31, 31, 128)
-model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(filters=100, kernel_size=(2,2)))#(30, 30, 64)
-model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(filters=70, kernel_size=(3,3), activation='relu')) 
-model.add(Flatten())                                 # 53824
-model.add(Dense(10, activation='softmax'))
-Epoch 00015: val_loss improved from 1.11781 to 1.06644, saving model to ./_save/MCP\k34_02_0113_1919_0015-1.0664.hdf5
-178/178 [==============================] - 3s 15ms/step - loss: 0.8310 - acc: 0.7124 - val_loss: 1.0664 - val_acc: 0.6441
+Epoch 00024: early stopping
+313/313 [==============================] - 1s 3ms/step - loss: 1.0623 - acc: 0.6419
+loss :  1.0622596740722656
+acc :  0.6419000029563904
 
 
 

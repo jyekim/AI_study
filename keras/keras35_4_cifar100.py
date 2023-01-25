@@ -10,8 +10,8 @@ path ='.c:/study4/_save/'
 
 (x_train, y_train), (x_test, y_test) = cifar100.load_data()
 
-x_train = x_train / 255                               #scaler가 된거인듯? 픽셀의 최대값이 255이니깐 
-x_test = x_test / 255
+# x_train = x_train / 255                               #scaler가 된거인듯? 픽셀의 최대값이 255이니깐 
+# x_test = x_test / 255
 print(x_train.shape, y_train.shape)              
 print(x_test.shape, y_test.shape)                     #(50000, 32, 32, 3) (50000, 1)         (10000, 32, 32, 3) (10000, 1)
 
@@ -33,13 +33,14 @@ print(np.unique(y_train, return_counts=True))
 
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(filters=128, kernel_size=(3,3), input_shape=(32, 32, 3), activation= 'relu')) #(31, 31, 128)
-model.add(MaxPooling2D((2, 2)))
-model.add(Conv2D(filters=64, kernel_size=(3,3)))#(30, 30, 64)
-model.add(Dropout(0.2))
+model.add(Conv2D(filters=128, kernel_size=(2,2), 
+                 input_shape=(32, 32, 3), 
+                 activation= 'relu',
+                 strides=2)) #(31, 31, 128)
+model.add(Conv2D(filters=64, kernel_size=(2,2)))#(30, 30, 64)
+model.add(MaxPooling2D())    
 model.add(Conv2D(filters=32, kernel_size=(2,2)))     #(29, 29, 32)
-model.add(Dropout(0.1))
-model.add(MaxPooling2D((2, 2)))                       
+# model.add(MaxPooling2D())                       
 model.add(Dense(32, activation='relu'))              
 model.add(Dropout(0.5))
 model.add(Flatten())         
@@ -66,12 +67,12 @@ print(type(date))
 filepath = './_save/MCP/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
-                      filepath= filepath + 'k34_03_' + date + '_' + filename)
+                      filepath= filepath + 'k35_04_' + date + '_' + filename)
 
 model.fit(x_train, y_train, epochs=100, verbose=1, batch_size=32,
           validation_split=0.2, callbacks=[es, mcp])
 
-# model.save(path +"keras34_03_ModelCheckPoint1_save_model.hdf5")
+# model.save(path +"keras35_04_ModelCheckPoint1_save_model.hdf5")
 
 #평가 예측   
 results =model.evaluate(x_test, y_test)
@@ -80,12 +81,5 @@ print('acc : ', results[1])
 
 
 """
-베스트 결과값
-Epoch 00092: val_loss improved from 2.46507 to 2.43583, saving model to ./_save/MCP\k34_03_0113_1959_0092-2.4358.hdf5
-1250/1250 [==============================] - 8s 6ms/step - loss: 2.0384 - acc: 0.4557 - val_loss: 2.4358 - val_acc: 0.4073
-
-
-loss :  2.4619898796081543
-acc :  0.4011000096797943
 
     """
