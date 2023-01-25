@@ -28,18 +28,23 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=333, test_size=0.2, stratify=y)
 
 
-# scaler = MinMaxScaler()   #
-# scaler.fit(x_train)
-# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-# x_test = scaler.transform(x_test)
+scaler = MinMaxScaler()   #
+scaler.fit(x_train)
+x_train = scaler.fit_transform(x_train)   #minmaxscaler  
+x_test = scaler.transform(x_test)
+print(x_train.shape, x_test.shape)   #(142, 13) (36, 13)
 
+
+x_train = x_train.reshape(142, 13, 1)
+x_test = x_test.reshape(36, 13, 1)
+print(x_train.shape, x_test.shape)
 
 # scaler = StandardScaler()
 # scaler.fit(x_train)
 # x_train = scaler.transform(x_train)     
 # x_test = scaler.transform(x_test)
 
-#2.모델구성 
+"""#2.모델구성 
 # model= Sequential()
 # model.add(Dense(100, activation='relu', input_shape=(13, )))
 # model.add(Dropout(0.5))
@@ -121,7 +126,7 @@ print(y_predict)
 
 acc = accuracy_score(y_test, y_predict)     # 소수점 들어가는 실수 형태로 구성// error 발생
 print(acc)
-
+"""
 
 """결과
 데이터가 적으니 스케일러 안하는게 더 나음

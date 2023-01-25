@@ -36,7 +36,7 @@ x_test = scaler.transform(x_test)
 print(x_train.shape, x_test.shape)  #(14447, 8) (6193, 8)
 
 x_train = x_train.reshape(14447, 2, 2, 2)
-x_test = x_test.reshape(6193,2, 2, 2)
+x_test = x_test.reshape(6193, 2, 2, 2)
 print(x_train.shape, x_test.shape)
 
 # scaler = StandardScaler()
