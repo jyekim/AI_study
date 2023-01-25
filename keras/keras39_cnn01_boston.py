@@ -1,5 +1,5 @@
 from tensorflow.keras.models import Sequential, Model, load_model    #모델을 붙이면 함수형으로 전환
-from tensorflow.keras.layers import Dense, Input, Dropout         # Input 붙이면 함수형으로 전환
+from tensorflow.keras.layers import Dense, Input, Dropout,Conv2D,Flatten      # Input 붙이면 함수형으로 전환
 import numpy as np
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
@@ -31,8 +31,6 @@ x_test = scaler.transform(x_test)
 # x_test = scaler.transform(x_test)
 
 
-print(x)
-print(type(x))  # <class 'numpy.ndarray'>
 
 # print("최소값 : ", np.min(x))       #standardscaler 때는 최소값 최대값 필요없음 그래서 주석처리 
 # print("최대값 : ",np.max(x))    
@@ -51,12 +49,15 @@ print(type(x))  # <class 'numpy.ndarray'>
 x_train, x_test, y_train, y_test = train_test_split(x, y,
     train_size=0.8, shuffle=True, random_state=123)
   
-
+x_train = x_train.reshape(404, 13, 1, 1)
+x_test = x_test.reshape(102, 13, 1, 1)
+print(x_train.shape, x_test.shape)
 
 
 #2. 모델구성(순차형)
 model = Sequential()
-model.add(Dense(5, input_shape=(13,)))    #.   4차원 같은 경우에는 input_shape로 써야함    위에 주석과 동일함
+model.add(Conv2D(100, (2,1), input_shape=(13,1,1),activation='relu'))
+model.add(Flatten())    #.   4차원 같은 경우에는 input_shape로 써야함    위에 주석과 동일함
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(30, activation='relu'))
@@ -115,7 +116,7 @@ filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 4epoch의 4자리, loss의소�
 mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbose=1, save_best_only=True,
                       filepath= filepath + 'k31_01_' + date + '_' + filename)
 
-model.fit(x_train, y_train, epochs=5000, batch_size=1,     
+model.fit(x_train, y_train, epochs=1000, batch_size=1,     
                 validation_split=0.2, callbacks=[es, mcp],
                 verbose=1)  
 

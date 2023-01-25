@@ -10,11 +10,13 @@ path ='.c:/study4/_save/'
 
 (x_train, y_train), (x_test, y_test) = cifar100.load_data()
 
-x_train = x_train / 255                               #scaler가 된거인듯? 픽셀의 최대값이 255이니깐 
-x_test = x_test / 255
+x_train = x_train.reshape(50000, 32*32*3)
+x_test = x_test.reshape(10000, 32*32*3)
 print(x_train.shape, y_train.shape)              
 print(x_test.shape, y_test.shape)                     #(50000, 32, 32, 3) (50000, 1)         (10000, 32, 32, 3) (10000, 1)
 
+x_train = x_train / 255                               #scaler가 된거인듯? 픽셀의 최대값이 255이니깐 
+x_test = x_test / 255
 
 print(np.unique(y_train, return_counts=True))  
 # #(array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
@@ -31,21 +33,18 @@ print(np.unique(y_train, return_counts=True))
 #        500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
 #        500, 500, 500, 500, 500, 500, 500, 500, 500], dtype=int64))
 
+
+
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(filters=128, kernel_size=(2,2), 
-                 input_shape=(32, 32, 3), 
-                 activation= 'relu',
-                 strides=2)) #(31, 31, 128)
-model.add(Conv2D(filters=64, kernel_size=(2,2)))#(30, 30, 64)
-model.add(MaxPooling2D())    
-model.add(Conv2D(filters=32, kernel_size=(2,2)))     #(29, 29, 32)
-# model.add(MaxPooling2D())                       
-model.add(Dense(32, activation='relu'))              
-model.add(Dropout(0.5))
-model.add(Flatten())         
-model.add(Dense(100, activation='softmax'))     #input_shape= (500000, 53824) 근데 행 무시하니깐 결과적으로 (53824, )
+model.add(Dense(128, activation='relu', input_shape=(3072, )))
+model.add(Dropout(0.3))
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.3))
+model.add(Dense(32, activation='linear'))                          
+model.add(Dense(10, activation='softmax'))
 model.summary()
+
 
 
 
