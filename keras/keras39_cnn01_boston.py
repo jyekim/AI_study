@@ -1,3 +1,4 @@
+#31에서 카피함
 from tensorflow.keras.models import Sequential, Model, load_model    #모델을 붙이면 함수형으로 전환
 from tensorflow.keras.layers import Dense, Input, Dropout,Conv2D,Flatten      # Input 붙이면 함수형으로 전환
 import numpy as np
