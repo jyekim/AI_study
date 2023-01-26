@@ -1,259 +1,121 @@
-
+# 다중분류
 import numpy as np
-import pandas as pd
+from sklearn.datasets import fetch_covtype
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.layers import Conv2D, Dense, Flatten, MaxPooling2D, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import accuracy_score
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from sklearn.preprocessing import OneHotEncoder
+import pandas as pd
 
+#1. 데이터
+datasets = fetch_covtype()      # sklearn 데이터 셋 안에 numpy로 저장되어 있다.
+x = datasets.data               # numpy로 변환 되는 것이 아니다.
+y = datasets['target']
+print(type(x))
+# print(x.shape, y.shape)     #   (581012, 54)   (581012,)
+# print(np.unique(y, return_counts=True))     #   (array([1, 2, 3, 4, 5, 6, 7]), array([211840, 283301,  35754,   2747,   9493,  17367,  20510], dtype=int64))
+print(y.shape)
 
-path = '/_save/'
+###################################################인코딩##############################################################
+# get_dummies       // .values or numpy 로 변환 // index, header 자동생성 // numpy 자료형이 pandas를 바로 못받아들임
+y = pd.get_dummies(y, drop_first=False)
+# # y = y.values
+# # y = y.to_numpy()
+y = np.array(y)
 
+# to_categorical
+# y = to_categorical(y)
+# print(type(y))
+# # print(y[:10])
+# # print(np.unique(y[:,0], return_counts=True))            # 모든 행의 0번째
+# y = np.delete(y, 0, axis=1)
 
-#1. 데이터 따릉
-path = './_data/ddarung/'
-train_csv = pd.read_csv(path + 'train.csv', index_col=0)
-# train_csv = pd.read_csv('./_data/ddarung/train.csv', index_col=0)    # 원래 해야하는거, index_col=0 == 0번째는 데이터 아니다.
-test_csv = pd.read_csv(path + 'test.csv', index_col=0)
-submission = pd.read_csv(path + 'submission.csv', index_col=0)
+# OneHotEncoder     preprocessing = 전처리 // sparse=True default ==> Matrix 반환 // array가 필요하므로 False // y = y.toarray()
+# Ohe = OneHotEncoder(sparse=True)
+# # y = y.reshape(581012, 1)
+# y = y.reshape(-1, 1)
+# # # print(y.shape)
+# # # Ohe.fit(y)                  
+# # # print(y.shape)
+# # y = Ohe.transform(y)            # 원하는 형식으로 변환 // 훈련시킨 결과(영향)에 대한 생성
+# y = Ohe.fit_transform(y)
+# y = y.toarray()
+# print(y[:15])
+# print(type(y))        scipy.sparse.~_maxtrix
+# sparse = True .toarray()      // False 그대로
 
-print(train_csv)    #(1459, 10) , count는 y값이므로 제외해야한다. input_dim=9
-print(submission.shape)
-print(train_csv.columns)
-# Index(['hour', 'hour_bef_temperature', 'hour_bef_precipitation',
-#        'hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
-#        'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5', 'count'],
-#       dtype='object')
-print(train_csv.info())     #Non-Null Count 결측치(1459- 1457 =2), (1459-1457 = 2), (1459-1450=9) ...
-                            # 결측치가 있는 데이터는 삭제해버린다.
-print(test_csv.info())
-print(train_csv.describe()) #std = 표준편차, 50% = 중간값
+######################################################################################################################
 
-###### 결측치 처리  1. 제거#####
-print(train_csv.isnull().sum())         # null값 모두 더하기
-train_csv = train_csv.dropna()          # 결측치 제거
-print(train_csv.isnull().sum())         # null값 모두 더하기
-print(train_csv.shape)                  # (1328, 10)
+# num = np.unique(datasets['target'], axis=0)
+# num = num.shape[0]
+# encoding = np.eye(num)[datasets['target']]
+# y = encoding
+# print(y.shape)
 
-x = train_csv.drop(['count'], axis=1)   # axis=축
-print(x)    #   [1459 rows x 9 columns]
-y = train_csv['count']
-print(y)
-print(y.shape)  # (1459, )
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, shuffle = True, 
+    random_state=333, test_size=0.2)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y,
-                        train_size=0.7, shuffle=True, random_state=1)
-print(x_train.shape, x_test.shape)  #   (929, 9) (399, 9)
-print(y_train.shape, y_test.shape)  #   (929,) (399,)
-
-# scaler = MinMaxScaler()   #
+# scaler = MinMaxScaler()           #   특성들을 특정 범위(주로 [0,1]) 로 스케일링 하는 것  // 이상치에 매우 민감하다
+scaler =StandardScaler()            #   최솟값과 최댓값의 크기를 제한하지 않기 때문에, 어떤 알고리즘에서는 문제가 있을 수 있으며 이상치에 매우 민감하다
 # scaler.fit(x_train)
-# x_train = scaler.fit_transform(x_train)   #minmaxscaler  
-# x_test = scaler.transform(x_test)
-# test_csv = scaler.transform(test_csv)
-
-scaler = StandardScaler()
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)     
+# x_train = scaler.transform(x_train)
+x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
 
+print(x_train.shape)        #(464809, 54)
+print(x_test.shape)         #(116203, 54)
 
-
-
+x_train = x_train.reshape(464809, 54, 1, 1)
+x_test = x_test.reshape(116203, 54, 1, 1)
 
 #2. 모델구성
 model = Sequential()
-model.add(Dense(1, input_dim=9))
-model.add(Dropout(0.5))
-model.add(Dense(93, activation= 'relu'))
-model.add(Dense(4, activation= 'relu'))
-model.add(Dropout(0.3))
-model.add(Dense(80, activation= 'relu'))
-model.add(Dense(100, activation= 'sigmoid'))
-model.add(Dense(12, activation= 'relu'))
-model.add(Dense(69, activation= 'relu'))
-model.add(Dense(15, activation= 'relu'))
-model.add(Dense(10, activation= 'relu' ))
-model.add(Dense(1, activation= 'linear'))
-
-
-
- #2. 모델구성(함수형)
-# input1 = Input(shape=(9,))       #인풋레이어는 
-# dense1 = Dense(50, activation= 'relu')(input1)
-# drop1 = Dropout(0.5)(dense1)
-# dense2 = Dense(40, activation= 'sigmoid')(drop1)
-# drop2= Dropout(0.3)(dense2) 
-# dense3 = Dense(30, activation= 'relu')(drop2)
-# drop3 = Dropout(0.2)(dense3)
-# dense4 = Dense(20, activation= 'linear')(drop3)
-# output1 = Dense(1, activation= 'linear')(dense4)
-# model = Model(inputs=input1, outputs=output1)
-# model.summary()
-
-
-
-
+model.add(Conv2D(64, (2,1), input_shape=(54, 1, 1)))
+model.add(Flatten())
+model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(7, activation='linear'))
 
 #3. 컴파일, 훈련
-#loss = mae or mse optimizer= 'adam', matrix[mae or mse]
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_loss', mode='min',
-                              patience=5, restore_best_weights=True, verbose=1) 
-model.compile(loss='mae', optimizer='adam')
-import datetime
+es = EarlyStopping(monitor='val_loss', mode='min',patience=16, 
+                  restore_best_weights=True,              
+                   verbose=1)
+import datetime                                             # 데이터 형식으로
 date = datetime.datetime.now()
-print(date)
-print(type(date))
 date = date.strftime("%m%d_%H%M")
-print(date)
-print(type(date))
+filepath = './_save/MCP/'
+filename = '{epoch:04d}-{loss:.4f}.hdf5'
+mcp = ModelCheckpoint(monitor='loss', mode = 'auto', verbose = 1,
+                      save_best_only=True,
+                #      filepath = path + 'MCP/keras30_ModelCheckPoint3.hdf5')
+                      filepath = filepath + 'k39_10_' + date +'_'+ filename) 
 
-# filepath = './_save/MCP/'
-# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+model.compile(loss='categorical_crossentropy', optimizer='adam',    # sparse_categorical_crossentropy 로 변경해도 가능
+              metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=1000, batch_size=64,
+        callbacks=[es,mcp],
+        # validation_split=0.2,
+        verbose=1)
 
-mcp = ModelCheckpoint(monitor='val_loss', mode='auto', verbpse=1, save_best_only=True,
-                      filepath= filepath +'k31_04_' + date + '_'+ filename)
+# print(type(y))
 
-model.fit(x_train, y_train, epochs=1500, batch_size=32, validation_split=(0.2), callbacks=[es,mcp])
+#4. 평가, 검증
+y_predict =  model.predict(x_test)
+# print(y_predict)
+y_predict = np.argmax(y_predict, axis = 1)                 
+print("y_pred(예측값) : ", y_predict[:20])
 
+y_test = np.argmax(y_test , axis=1)
+print("y_test(원래값) : ", y_test[:20])
 
-# model.save(path +"keras31_dropout04_save_model.hdf5")
-
-
-
-#4. 평가, 예측
-
-loss = model.evaluate(x_test, y_test)
-print('loss : ', loss)
-
-y_predict = model.predict(x_test)
-print(y_predict)
-
-# 결측치 처리 x
-
-def RMSE(y_test, y_predict):
-    return np.sqrt(mean_squared_error(y_test, y_predict))
-rmse = RMSE(y_test, y_predict)
-print("RMSE : ", rmse)  # RMSE :  83.02001881026747
+acc = accuracy_score(y_test, y_predict)
+print(acc)     
+#   0.3649
 
 
-# 제출
-y_submit = model.predict(test_csv)   #예측한 카운트가 y_submit 
-# print(y_submit)
-#print(y_submit.shape) #(715, 1) 
-
-#.to_csv()를 사용해서
-#submission.0105.csv를 완성하시오 
-
-# print(submission)
-submission['count'] = y_submit
-# print(submission)
- 
-# submission.to_csv(path + 'submission_01171045.csv')
-
-
-"""
-결과
-
-dropout 후  RMSE :  45.77021134356291
-
-
-
-RMSE :  46.21313782099082
-"""
-
-
-# import tensorflow as tf  
- 
-# # Display the version
-# print(tf.__version__)    
- 
-# # other imports
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from tensorflow.keras.layers import Input, Conv2D, Dense, Flatten, Dropout
-# from tensorflow.keras.layers import GlobalMaxPooling2D, MaxPooling2D
-# from tensorflow.keras.layers import BatchNormalization
-# from tensorflow.keras.models import Model
-
-# # Load in the data
-# cifar10 = tf.keras.datasets.cifar10
- 
-# # Distribute it to train and test set
-# (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-# print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
-
-# # Reduce pixel values
-# x_train, x_test = x_train / 255.0, x_test / 255.0
- 
-# # flatten the label values
-# y_train, y_test = y_train.flatten(), y_test.flatten()
-# # number of classes
-# K = len(set(y_train))
- 
-# # calculate total number of classes
-# # for output layer
-# print("number of classes:", K)
- 
-# # Build the model using the functional API
-# # input layer
-# i = Input(shape=x_train[0].shape)
-# x = Conv2D(32, (3, 3), activation='relu', padding='same')(i)
-# x = BatchNormalization()(x)
-# x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
-# x = BatchNormalization()(x)
-# x = MaxPooling2D((2, 2))(x)
- 
-# x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-# x = BatchNormalization()(x)
-# x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-# x = BatchNormalization()(x)
-# x = MaxPooling2D((2, 2))(x)
- 
-# x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
-# x = BatchNormalization()(x)
-# x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
-# x = BatchNormalization()(x)
-# x = MaxPooling2D((2, 2))(x)
- 
-# x = Flatten()(x)
-# x = Dropout(0.2)(x)
- 
-# # Hidden layer
-# x = Dense(1024, activation='relu')(x)
-# x = Dropout(0.2)(x)
- 
-# # last hidden layer i.e.. output layer
-# x = Dense(K, activation='softmax')(x)
- 
-# model = Model(i, x)
- 
-# # model description
-# model.summary()
-
-# # 3.Compile
-# model.compile(optimizer='adam',
-#               loss='sparse_categorical_crossentropy',
-#               metrics=['accuracy'])
-# model.fit(x_train, y_train,
-#  validation_data=(x_test, y_test), epochs=50)
-
-#  #plot
-# plt.plot(label='acc', color='red')
-# plt.plot(label='val_acc', color='green')
-# plt.legend()
-
-# #select the image from our test dataset
-# image_number = 0
-
-# #display the image
-# plt.imshow(x_test[image_number])
-
-# #load the image in an array
-# n = np.array(x_test[image_number])
-
-# #reshape it
-# p = n.reshape(1, 32, 32, 3)

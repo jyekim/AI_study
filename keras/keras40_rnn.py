@@ -24,7 +24,7 @@ print(x.shape)           #(7, 3, 1)  ===> [[[1],[2],[3]], [2],[3],[4]],.....]
 #2. 모델구성
 
 model = Sequential()
-model.add(SimpleRNN(64, input_shape=(3, 1), activation='relu'))          #이부분이 rnn이 되는 것 
+model.add(SimpleRNN(64, input_shape=(3, 1), activation='relu'))          #이 부분이 rnn이 되는 것 
 model.add(Dense(40, activation='relu'))
 model.add(Dense(20, activation='linear'))
 model.add(Dense(10, activation='relu'))

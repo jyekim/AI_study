@@ -14,7 +14,7 @@ datasets = fetch_covtype()
 x = datasets.data
 y = datasets['target']
 print(x.shape, y.shape)   #(581012, 54) (581012,)
-print(np.unique(y, return_counts=True))      #(array([1, 2, 3, 4, 5, 6, 7]), array([211840, 283301,  35754,   2747,   9493,  17367,  20510], dtype=int64)
+# print(np.unique(y, return_counts=True))      #(array([1, 2, 3, 4, 5, 6, 7]), array([211840, 283301,  35754,   2747,   9493,  17367,  20510], dtype=int64)
 
 # from tensorflow.keras.utils import to_categorical
 
@@ -117,10 +117,12 @@ scaler.fit(x_train)
 x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 x_test = scaler.transform(x_test)
 
+print(x_train.shape)   #(464809, 54) 
+print(x_test.shape)    #(116203, 54)
 
-# x_train = x_train.reshape(14447, 2, 2, 2)
-# x_test = x_test.reshape(6193, 2, 2, 2)
-# print(x_train.shape, x_test.shape)
+x_train = x_train.reshape(464809, 54, 1, 1)
+x_test = x_test.reshape(116203, 54, 1, 1)
+print(x_train.shape, x_test.shape)
 
 
 # scaler = StandardScaler()
@@ -136,8 +138,8 @@ x_test = scaler.transform(x_test)
 
 #2. 모델구성 
 model = Sequential()
-model.add(Dense(5, activation= 'relu', input_shape=(54, )))
-model.add(Dropout(0.5))
+model.add(Conv2D(50, (2,1), input_shape=(54, 1, 1), activation='relu'))
+model.add(Flatten())
 model.add(Dense(10, activation='relu'))
 model.add(Dense(430, activation='relu'))
 model.add(Dropout(0.3))
@@ -216,6 +218,7 @@ print(acc)
 
 
 '''
+cnn 했을 때 : 
 
 dropout 했을 떄 loss :  0.5446786284446716
               accuracy :  0.7677512764930725

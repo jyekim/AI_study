@@ -1,8 +1,7 @@
-#수정 못함
-
+#수정 완료 
 from sklearn.datasets import load_iris   
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input, Dropout, Conv2D, Flatten
+from tensorflow.keras.layers import Dense, Input, Dropout, Conv2D, Flatten, MaxPooling2D
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import accuracy_score
@@ -17,7 +16,7 @@ path = './_save/'
 
 datasets = load_iris()
 # print(datasets.DESCR)      # pandas 에서는 .describe() 혹은 .info()
-# print(datasets.feature_names)   #pandas .columns 으로 씀 괄호가 
+# print(datasets.feature_names)   #pandas .columns 으로 씀 
 
 
 x = datasets.data
@@ -28,23 +27,24 @@ y = datasets['target']
 # print(y.shape)   #(150, 4),  (150, )
 
 
-# from tensorflow.keras.utils import to_categorical 
-# y = to_categorical(y) 
+from tensorflow.keras.utils import to_categorical 
+y = to_categorical(y) 
 
 # print(y)
 # print(y.shape) # (150, 3) 으로 바뀐걸 알 수 있음 
 
 
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle=True,
-                                                     random_state=333, test_size=0.2, stratify=y)   #false의 문제점은?  stratify=ㅛ 옵션을 넣어주면 한쪽으로 치우쳐지는거 배제됨
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, shuffle=True,
+    random_state=333, test_size=0.2, stratify=y)   #false의 문제점은?  stratify=ㅛ 옵션을 넣어주면 한쪽으로 치우쳐지는거 배제됨
 
 
-scaler = MinMaxScaler()   #
-scaler.fit(x_train)
+scaler = MinMaxScaler()   
+# scaler.fit(x_train)
 x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 x_test = scaler.transform(x_test)
-print(x_train.shape, x_test.shape) #(150, 4) 
+print(x_train.shape, x_test.shape) #(120, 4) (30, 4)
 
 # scaler = StandardScaler()
 # scaler.fit(x_train)
@@ -53,8 +53,8 @@ print(x_train.shape, x_test.shape) #(150, 4)
 # print(x)
 # print(type(x)) 
 
-x_train = x_train.reshape(150, 2, 2, 1)
-x_test = x_test.reshape(150, 2, 2, 1)
+x_train = x_train.reshape(120, 2, 2, 1)
+x_test = x_test.reshape(30, 2, 2, 1)
 print(x_train.shape, x_test.shape)
 
 # print(y_train)
@@ -145,8 +145,12 @@ print(acc)
 
 
 """결과 
-데이터가 적으니 스케일러 안하는게 더 나음
 
+cnn 결과값 :
+accuracy :  0.8999999761581421
+
+데이터가 적으니 스케일러 안하는게 더 나음
+스케일러 안 했을 때 결과값:
 accuracy :  0.9333333373069763
 
 

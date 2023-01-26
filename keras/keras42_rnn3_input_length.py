@@ -26,7 +26,7 @@ print(x.shape)           #(7, 3, 1)  ===> [[[1],[2],[3]], [2],[3],[4]],.....]
 model = Sequential()
 # model.add(SimpleRNN(units=64, input_shape=(3, 1), activation='relu'))          #이부분이 rnn이 되는 것 
                                             #(N, 3, 1)--> ([batch, timesteps, feature])
-model.add(SimpleRNN(units=64, input_length=3, input_dim=1))  #timesteps를 input_lengh랑 같다는 것을 알 수 있다
+model.add(SimpleRNN(units=64, input_length=3, input_dim=1))  #timesteps를 input_lenght랑 같다는 것을 알 수 있다
 # model.add(SimpleRNN(units= 64, input_dim=1, input_length=3))  #가독성이 떨어짐
 model.add(Dense(40, activation='relu'))
 model.add(Dense(20, activation='linear'))

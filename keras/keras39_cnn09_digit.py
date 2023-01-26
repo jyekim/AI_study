@@ -28,8 +28,7 @@ print(y.shape)   #(1797, 10)
 x_train, x_test, y_train, y_test = train_test_split(x,y,
                                                     shuffle=True, random_state=222, test_size=0.2, stratify=y)
 
-scaler = MinMaxScaler()   #
-scaler.fit(x_train)
+scaler = MinMaxScaler()   
 x_train = scaler.fit_transform(x_train)   #minmaxscaler  
 x_test = scaler.transform(x_test)
 print(x_train.shape, x_test.shape)  #(1437, 64) (360, 64)
@@ -55,6 +54,7 @@ print(x_train.shape, x_test.shape)
 model= Sequential()
 model.add(Conv2D(100, (2,1), activation='relu', input_shape=(4, 4, 4),padding='same'))
 model.add(Conv2D(40, (2,1), activation='relu'))
+model.add(Flatten())      
 model.add(Dense(82, activation='relu'))
 model.add(Dropout(0.3))
 model.add(Dense(50, activation='relu'))
@@ -137,11 +137,13 @@ print(acc)
 
 
 """
-CNN 후 : 
+CNN 후 : accuracy :  0.9916666746139526
+
+
 dropout 후 : accuracy :  0.9750000238418579
-
-
-    결과: accuracy :  0.9750000238418579
+   
+   
+   결과: accuracy :  0.9750000238418579
     
     minmaxscaler: accuracy :  0.09444444626569748
     standardscaler: accuracy :  0.10000000149011612
