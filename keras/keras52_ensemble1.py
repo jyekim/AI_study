@@ -1,5 +1,47 @@
 import numpy as np                      
-x1_datasets = np.array([range(100), range(301,401)]).transpose()
+import pandas as pd                    
+
+
+
+#1. 데이터 
+path = './_data/samsung/'
+df1 = pd.read_csv(path + 'amore.csv', index_col=0,
+                  header=0, encoding='cp949', sep=',',thousands=',')
+print(df1)
+print(df1.shape)    #(1980, 16)
+
+df2 = pd.read_csv(path + 'samsung.csv', index_col=0,
+                  header=0, encoding='cp949', sep=',', thousands=',')
+print(df2)
+print(df2.shape)   #(2221, 16)
+
+# # 삼성전자의 모든 데이터
+# for i in range(len(df1.index)):       # 거래량 str 을 int 변경
+#          for j in range(len(df1.iloc[i])):
+#                 df1.iloc[i,j] = int(df1.iloc[i,j].replace(',', ''))
+# # 아모레의 모든 데이터
+# for i in range(len(df2.index)):
+#          for j in range(len(df2.iloc[i])):
+#                 df2.ilocp[i,j] = int(df2.iloc[i,j].replace(',', ''))          
+
+
+#일자 오름차순(최근날짜를 가장 아래로)
+df1 = df1.sort_values(['일자'], ascending=[True])
+df2 = df2.sort_values(['일자'], ascending=[True]) 
+print(df1)
+print(df2)
+  
+  
+#pandas를 numpy로 변경 후 저장
+df1 = df1.values
+df2 = df2.values
+print(type(df1), type(df2))
+print(df1.shape, df2.shape)    #(2220, 16) (1980, 16)
+
+np.save('./_data/samsung.npy', arr=df1)
+np.save('./_data/amore.npy', arr=df2)
+
+"""x1_datasets = np.array([range(100), range(301,401)]).transpose()
 print(x1_datasets.shape)   #(2, 100)  .transpose()한 후에 (100, 2)   #삼성전자의 시가, 고가
 x2_datasets = np.array([range(101,201), range(411,511), range(150,250)]).T
 print(x2_datasets.shape)   #(100, 3)                                  #아모레의 시가, 고가 , 종가
@@ -21,7 +63,8 @@ print(x2_test.shape, x2_test.shape, y_test.shape)      #(30, 3) (30, 3) (30,)
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Input
 
-#2-1 모델 1
+#2-1 모델 
+
 input1 = Input(shape=(2,))
 dense1 = Dense(11, activation='relu', name='ds11')(input1)
 dense2 = Dense(12, activation='relu', name='ds12')(dense1)
@@ -50,4 +93,4 @@ model.fit([x1_train, x2_train], y_train, epochs=10, batch_size=8)
 
 #4. 평가 예측
 loss = model.evaluate([x1_test, x2_test], y_test)
-print('loss : ', loss)                                                           
+print('loss : ', loss)                                                           """
