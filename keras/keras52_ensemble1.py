@@ -1,6 +1,14 @@
 import numpy as np                      
 import pandas as pd                    
 
+# #numpy 데이터 불러오기 
+# samsung = np.load('./_data/samsung.npy')
+# amore = np.load('./_data/amore.npy')
+
+# print(samsung)
+# print(amore)
+# print(samsung.shape)
+# print(amore.shape)
 
 
 #1. 데이터 
@@ -14,6 +22,7 @@ df2 = pd.read_csv(path + 'samsung.csv', index_col=0,
                   header=0, encoding='cp949', sep=',', thousands=',')
 print(df2)
 print(df2.shape)   #(2221, 16)
+print(df1.dtypes)
 
 # # 삼성전자의 모든 데이터
 # for i in range(len(df1.index)):       # 거래량 str 을 int 변경
@@ -41,24 +50,53 @@ print(df1.shape, df2.shape)    #(2220, 16) (1980, 16)
 np.save('./_data/samsung.npy', arr=df1)
 np.save('./_data/amore.npy', arr=df2)
 
-"""x1_datasets = np.array([range(100), range(301,401)]).transpose()
-print(x1_datasets.shape)   #(2, 100)  .transpose()한 후에 (100, 2)   #삼성전자의 시가, 고가
-x2_datasets = np.array([range(101,201), range(411,511), range(150,250)]).T
-print(x2_datasets.shape)   #(100, 3)                                  #아모레의 시가, 고가 , 종가
+
+#numpy 데이터 불러오기 
+samsung = np.load('./_data/samsung.npy',allow_pickle=True)
+amore = np.load('./_data/amore.npy', allow_pickle=True)
+
+print(samsung)
+print(amore)
+print(samsung.shape)
+print(amore.shape)
+
+# dnn 구성하기 
+def split_xy5(datasets, time_steps, y_column):
+    x, y =list(), list()
+    for i in range(len(datasets)):
+        x_end_number = i + time_steps
+        y_end_number = x_end_number + y_column
+        
+        if y_end_number > len(datasets):
+            break
+        tmp_x = datasets[i:x_end_number, :]
+        tmp_y = datasets[x_end_number:y_end_number, 5]
+        x.append(tmp_x)
+        y.append(tmp_y)
+        return np.array(x), np.array(y)
+    x, y = split_xy5(samsung, 1, 1)
+    print(x[0,:], "\n", y[0])
+    print(x.shape)
+    print(y.shape)
+
+# x1_datasets = np.array([range(100), range(301,401)]).transpose()
+# print(x1_datasets.shape)   #(2, 100)  .transpose()한 후에 (100, 2)   #삼성전자의 시가, 고가
+# x2_datasets = np.array([range(101,201), range(411,511), range(150,250)]).T
+# print(x2_datasets.shape)   #(100, 3)                                  #아모레의 시가, 고가 , 종가
 
 
-y = np.array(range(2001, 2101))  #(100, )     #삼성전자의 하루 뒤 종가 
+# y = np.array(range(2001, 2101))  #(100, )     #삼성전자의 하루 뒤 종가 
 
-from sklearn.model_selection import train_test_split
-x1_train, x1_test, x2_train, x2_test, y_train, y_test = train_test_split(
-    x1_datasets, x2_datasets, y, train_size=0.7, random_state=1234
-)
+# from sklearn.model_selection import train_test_split
+# x1_train, x1_test, x2_train, x2_test, y_train, y_test = train_test_split(
+#     x1_datasets, x2_datasets, y, train_size=0.7, random_state=1234
+# )
 
-print(x1_train.shape, x2_train.shape, y_train.shape)   #(70, 2) (70, 3) (70,)
-print(x2_test.shape, x2_test.shape, y_test.shape)      #(30, 3) (30, 3) (30,)
+# print(x1_train.shape, x2_train.shape, y_train.shape)   #(70, 2) (70, 3) (70,)
+# print(x2_test.shape, x2_test.shape, y_test.shape)      #(30, 3) (30, 3) (30,)
 
 
-
+"""
 #2. 모델구성
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Input

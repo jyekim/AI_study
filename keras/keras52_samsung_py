@@ -1,0 +1,80 @@
+import numpy as np                      
+import pandas as pd              
+# #numpy 데이터 불러오기 
+# samsung = np.load('./_data/samsung.npy')
+# amore = np.load('./_data/amore.npy')
+
+# print(samsung)
+# print(amore)
+# print(samsung.shape)
+# print(amore.shape)
+
+
+#1. 데이터 
+path = './_data/samsung/'
+df1 = pd.read_csv(path + 'amore.csv', index_col=0,
+                  header=0, encoding='cp949', sep=',',thousands=',')
+print(df1)
+print(df1.shape)    #(1980, 16)
+
+df2 = pd.read_csv(path + 'samsung.csv', index_col=0,
+                  header=0, encoding='cp949', sep=',', thousands=',')
+print(df2)
+print(df2.shape)   #(2221, 16)
+print(df1.dtypes)
+
+# # 삼성전자의 모든 데이터
+# for i in range(len(df1.index)):       # 거래량 str 을 int 변경
+#          for j in range(len(df1.iloc[i])):
+#                 df1.iloc[i,j] = int(df1.iloc[i,j].replace(',', ''))
+# # 아모레의 모든 데이터
+# for i in range(len(df2.index)):
+#          for j in range(len(df2.iloc[i])):
+#                 df2.ilocp[i,j] = int(df2.iloc[i,j].replace(',', ''))          
+
+
+#일자 오름차순(최근날짜를 가장 아래로)
+df1 = df1.sort_values(['일자'], ascending=[True])
+df2 = df2.sort_values(['일자'], ascending=[True]) 
+print(df1)
+print(df2)
+  
+  
+#pandas를 numpy로 변경 후 저장
+df1 = df1.values
+df2 = df2.values
+print(type(df1), type(df2))
+print(df1.shape, df2.shape)    #(2220, 16) (1980, 16)
+
+np.save('./_data/samsung.npy', arr=df1)
+np.save('./_data/amore.npy', arr=df2)
+
+
+#numpy 데이터 불러오기 
+samsung = np.load('./_data/samsung.npy',allow_pickle=True)
+amore = np.load('./_data/amore.npy', allow_pickle=True)
+
+print(samsung)
+print(amore)
+print(samsung.shape)
+print(amore.shape)
+
+# dnn 구성하기 
+def split_xy5(dataset, time_steps, y_column):
+    x, y = list(), list()
+    for i in range(len(dataset)):
+        x_end_number = i + time_steps
+        y_end_number = x_end_number + y_column # 수정
+
+        if y_end_number > len(dataset):  # 수정
+            break
+        tmp_x = dataset[i:x_end_number, :]  # 수정
+        tmp_y = dataset[x_end_number:y_end_number, 3]    # 수정
+        x.append(tmp_x)
+        y.append(tmp_y)
+    return np.array(x), np.array(y)
+x1, y1 = split_xy5(samsung, 5, 1) 
+x2, y2 = split_xy5(amore, 5, 1) 
+print(x2[0,:], "\n", y2[0])
+print(x2.shape)
+print(y2.shape)
