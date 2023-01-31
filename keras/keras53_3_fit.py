@@ -24,7 +24,7 @@ test_datagen = ImageDataGenerator(
 xy_train = train_datagen.flow_from_directory(
     './_data/brain/train/',
     target_size=(100, 100), #줄어듬 기존 사이즈가 150,150이니깐
-    batch_size=1000,          #배치를 크게 잡아주면 총 데이터 수를 알 수 있게 된다. 
+    batch_size=100,          #배치를 크게 잡아주면 총 데이터 수를 알 수 있게 된다. 
     class_mode='binary',
     color_mode='grayscale', #끝자리가 1이 되는 이유
     shuffle=True
@@ -35,7 +35,7 @@ xy_train = train_datagen.flow_from_directory(
 xy_test = test_datagen.flow_from_directory(
     './_data/brain/test/',
     target_size=(100, 100), #줄어듬 기존 사이즈가 150,150이니깐
-    batch_size=1000,
+    batch_size=100,
     class_mode='binary',
     color_mode='grayscale', #끝자리가 1이 되는 이유
     shuffle=True
@@ -53,10 +53,15 @@ from tensorflow.keras.layers import Dense, Conv2D, Flatten
 
 model = Sequential()
 model.add(Conv2D(64, (2,2), input_shape=(100, 100, 1)))
-model.add(Conv2D(64, (3,3), activation='relu'))
+model.add(Conv2D(80, (3,3), activation='relu'))
 model.add(Conv2D(32, (3,3), activation='relu'))
+model.add(Conv2D(80, (3,3), activation='relu'))
+model.add(Conv2D(100, (3,3), activation='relu'))
+model.add(Conv2D(50, (3,3), activation='relu'))
 model.add(Flatten())
-model.add(Dense(10, activation='relu'))
+model.add(Dense(38, activation='relu'))
+model.add(Dense(73, activation='relu'))
+model.add(Dense(8, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 
@@ -69,7 +74,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam',
 #                     validation_steps=4, )   
 hist = model.fit(xy_train[0][0], xy_train[0][1], 
                  #steps_per_epoch=16, 
-                 epochs=100, 
+                 epochs=200, 
                  validation_data=(xy_test[0][0], xy_test[0][1]))
                     # validation_steps=4, )   
 
@@ -83,9 +88,9 @@ print('val_loss :', val_loss[-1])
 print('accuracy :', accuracy[-1])
 print('val_acc :', val_acc[-1])
    
-import matplotlib.pyplot as plt
-plt.imshow(xy_train[0][0][1],'gray')
-plt.show()
+# import matplotlib.pyplot as plt
+# plt.imshow(xy_train[0][0][1],'gray')
+# plt.show()
 
 
 #4. 결과 

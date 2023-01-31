@@ -23,8 +23,8 @@ test_datagen = ImageDataGenerator(
 #(x= 80, 150, 150, 1)인 부분이  x = (160, 150, 150, 1) y =(160, )  
 xy_train = train_datagen.flow_from_directory(
     './_data/brain/train/',
-    target_size=(100, 100), #증폭됨 기존 사이즈가 150,150이니깐
-    batch_size=10,          #배치를 크게 잡아주면 총 데이터 수를 알 수 있게 된다. 
+    target_size=(100, 100), #줄어듬 기존 사이즈가 150,150이니깐
+    batch_size=100,          #배치를 크게 잡아주면 총 데이터 수를 알 수 있게 된다. 
     class_mode='binary',
     color_mode='grayscale', #끝자리가 1이 되는 이유
     shuffle=True
@@ -34,8 +34,8 @@ xy_train = train_datagen.flow_from_directory(
 
 xy_test = test_datagen.flow_from_directory(
     './_data/brain/test/',
-    target_size=(100, 100), #증폭됨 기존 사이즈가 150,150이니깐
-    batch_size=10,
+    target_size=(100, 100), #줄어듬 기존 사이즈가 150,150이니깐
+    batch_size=100,
     class_mode='binary',
     color_mode='grayscale', #끝자리가 1이 되는 이유
     shuffle=True
@@ -49,34 +49,36 @@ print(xy_train)
 
 #2. 모델
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, Flatten
 
 model = Sequential()
 model.add(Conv2D(64, (2,2), input_shape=(100, 100, 1)))
-model.add(Conv2D(64, (3,3), activation='relu'))
+model.add(Conv2D(80, (3,3), activation='relu'))
 model.add(Conv2D(32, (3,3), activation='relu'))
+model.add(Conv2D(80, (3,3), activation='relu'))
+model.add(Conv2D(100, (3,3), activation='relu'))
+model.add(Conv2D(50, (3,3), activation='relu'))
 model.add(Flatten())
-model.add(Dense(16, activation='relu'))
-model.add(Dropout(0.3))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(70, activation='relu'))
-model.add(Dropout(0.5))
+model.add(Dense(38, activation='relu'))
+model.add(Dense(73, activation='relu'))
+model.add(Dense(8, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
-#model.add(Dense(1, activation='sigmoid')) sigmodi 두개 쓰고 싶을때는 sparse_categoricalentropy 수정해주면 됨
-model.summary()
+
 
 #3. 컴파일
-# model.compile(loss='sparse_categoricalentropy', optimizer='adam',
-                # metrics=['acc']
 model.compile(loss='binary_crossentropy', optimizer='adam',
-               metrics=['acc'])
+              metrics=['acc'])
 
-hist = model.fit_generator(xy_train, steps_per_epoch=16, epochs=100, 
-                    validation_data=xy_test, 
-                    validation_steps=4, )   #160개의 데이터를 배치사이즈 10으로 해줬으니 steps_per_epoch가 16개인것을 계산해서 넣어줘야함
-#validation_step 몇 넣어줘야한느지 찾아야함 
-
-
+# hist = model.fit_generator(xy_train, steps_per_epoch=16, epochs=100, 
+#                     validation_data=xy_test, 
+#                     validation_steps=4, )   
+hist = model.fit(#xy_train[0][0], xy_train[0][1], 
+                 xy_train,
+                 #steps_per_epoch=16, 
+                 epochs=100, 
+                 validation_data=(xy_test[0][0], xy_test[0][1]))
+                    # validation_steps=4, 
+                    #validation_split=0.2)   
 
 accuracy = hist.history['acc']
 val_acc = hist.history['val_acc']
@@ -88,22 +90,10 @@ print('val_loss :', val_loss[-1])
 print('accuracy :', accuracy[-1])
 print('val_acc :', val_acc[-1])
    
-   
-#그림 mabplotlib 당겨서 만들기 완성 
-#keras 33_mnist_imshow에서 가져옴 
-import matplotlib.pyplot as plt
-plt.imshow(xy_train[0][0][1],'gray')
-plt.show()
-
-# import matplotlib as mpl
 # import matplotlib.pyplot as plt
-# from tensorflow.keras.preprocessing import image
-# from tensorflow.keras.preprocessing. image import ImageDataGenerator
-
-# plt.imshow(train_datagen)
-# # img = image.load_img('./_data/brain/train, target_size=(150, 150)) print(type(img))
-# # plt.imshow()
-# # plt.show()
+# plt.imshow(xy_train[0][0][1],'gray')
+# plt.show()
 
 
-# #4. 결과 
+#4. 결과 
+
